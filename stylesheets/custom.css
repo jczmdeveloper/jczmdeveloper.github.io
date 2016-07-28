@@ -1,0 +1,30 @@
+.nav {
+    background:#333333;
+    float:left;
+    width:100%;
+    margin-top:-20px;
+    margin-bottom:50px;
+}
+.nav ul{
+    margin:0px;
+    padding:0;
+	list-style:none;
+    vertical-align:central;
+}
+
+ .nav ul li a {
+     color:white;
+     float:left;
+    padding:0;
+    margin:0px;
+    width:100px;
+    color:white;
+    height:40px;
+    line-height:40px;
+   text-align:center;
+   vertical-align:central;
+    }
+ .nav ul li a:hover {
+        background-color: #0090FF;
+        
+    }
