@@ -1,332 +1,255 @@
-五种布局： FrameLayout 、 LinearLayout 、 AbsoluteLayout 、 RelativeLayout 、 TableLayout 全都继承自ViewGroup，各自特点及绘制效率对比。
+#Java回收机制
+Java的堆是一个运行时数据区,类的实例(对象)从中分配空间。Java虚拟机(JVM)的堆中储存着正在运行的应用程序所建立的所有对象，这些对象通过new、newarray、anewarray和multianewarray等指令建立，但是它们不需要程序代码来显式地释放。
+#垃圾收集的意义
+在C++中，对象所占的内存在程序结束运行之前一直被占用，在明确释放之前不能分配给其它对象；而在Java中，当没有对象引用指向原先分配给某个对象的内存时，该内存便成为垃圾。JVM的一个系统级线程会自动释放该内存块。垃圾收集意味着程序不再需要的对象是"无用信息"，这些信息将被丢弃。当一个对象不再被引用的时候，内存回收它占领的空间，以便空间被后来的新对象使用。
 
-FrameLayout(框架布局)
+事实上，除了释放没用的对象，垃圾收集也可以清除内存记录碎片。由于创建对象和垃圾收集器释放丢弃对象所占的内存空间，内存会出现碎片。碎片是分配给对象的内存块之间的空闲内存洞。碎片整理将所占用的堆内存移到堆的一端，JVM将整理出的内存分配给新的对象。
 
-此布局是五中布局中最简单的布局，Android中并没有对child view的摆布进行控制，这个布局中所有的控件都会默认出现在视图的左上角，我们可以使用android:layout_margin，android:layout_gravity等属性去控制子控件相对布局的位置。
+垃圾收集能自动释放内存空间，减轻编程的负担。这使Java虚拟机具有一些优点。首先，它能使编程效率提高。在没有垃圾收集机制的时候，可能要花许多时间来解决一个难懂的存储器问题。在用Java语言编程的时候，靠垃圾收集机制可大大缩短时间。其次是它保护程序的完整性,垃圾收集是Java语言安全性策略的一个重要部份。
 
-LinearLayout(线性布局)
+垃圾收集的一个潜在的缺点是它的开销影响程序性能。Java虚拟机必须追踪运行程序中有用的对象,而且最终释放没用的对象。这一个过程需要花费处理器的时间。其次垃圾收集算法的不完备性，早先采用的某些垃圾收集算法就不能保证100%收集到所有的废弃内存。当然随着垃圾收集算法的不断改进以及软硬件运行效率的不断提升，这些问题都可以迎刃而解。
 
-一行只控制一个控件的线性布局，所以当有很多控件需要在一个界面中列出时，可以用LinearLayout布局。 此布局有一个需要格外注意的属性:android:orientation=“horizontal|vertical。
+#简述Java回收机制
+##一．谁在做Garbage Collection？
+在C++里，释放内存是手动处理的，要用delete运算符来释放分配的内存。这是流行的说法。确切地说，是应用认为不需要某实体时，就需用delete告诉系统，可以回收这块空间了。这个要求，对编码者来说，是件很麻烦、很难做到的事。随便上哪个BBS，在C/C++版块里总是有一大堆关于内存泄漏的话题。
+Java采用一种不同的，很方便的方法：Garbage Collection。垃圾回收机制放在JVM里。JVM完全负责垃圾回收事宜，应用只在需要时申请空间，而在抛弃对象时不必关心空间回收问题。
 
-当android:orientation="horizontal时，说明你希望将水平方向的布局交给LinearLayout* ，其子元素的android:layout_gravity="right|left" 等控制水平方向的gravity值都是被忽略的，此时LinearLayout中的子元素都是默认的按照水平从左向右来排*，我们可以用android:layout_gravity="top|bottom"等gravity值来控制垂直展示。
-反之，可以知道 当android:orientation="vertical时，LinearLayout对其子元素展示上的的处理方式。
-AbsoluteLayout(绝对布局)
+##二.对象在什么时候被丢弃？
+Java的垃圾回收机制一般包含近十种算法。对这些算法中的多数，我们不必予以关心。只有其中最简单的一个：引用计数法，与编码有关。
 
-可以放置多个控件，并且可以自己定义控件的x,y位置
+一个对象，可以有一个或多个引用变量指向它。当一个对象不再有任何一个引用变量指向它时，这个对象就被应用抛弃了。或者说，这个对象可以被垃圾回收机制回收了。
 
-RelativeLayout(相对布局)
+这就是说，当不存在对某对象的任何引用时，就意味着，应用告诉JVM：我不要这个对象，你可以回收了。
 
-这个布局也是相对自由的布局，Android 对该布局的child view的 水平layout& 垂直layout做了解析，由此我们可以FrameLayout的基础上使用标签或者Java代码对垂直方向 以及 水平方向 布局中的views任意的控制.
+JVM的垃圾回收机制对堆空间做实时检测。当发现某对象的引用计数为0时，就将该对象列入待回收列表中。但是，并不是马上予以销毁。
+###下面是一些回收算法分析
 
-相关属性：
+Java语言规范没有明确地说明JVM使用哪种垃圾回收算法，但是任何一种垃圾收集算法一般要做2件基本的事情（前面有提及）：
 
-　　android:layout_centerInParent="true|false"
-　　android:layout_centerHorizontal="true|false"
-　　android:layout_alignParentRight="true|false"
-　　
-TableLayout(表格布局)
+（1）发现无用信息对象；（2）回收被无用对象占用的内存空间，使该空间可被程序再次使用。
+大多数垃圾回收算法使用了根集(root set)这个概念；所谓根集就量正在执行的Java程序可以访问的引用变量的集合(包括局部变量、参数、类变量)，程序可以使用引用变量访问对象的属性和调用对象的方法。
 
-将子元素的位置分配到行或列中，一个TableLayout由许多的TableRow组成
+垃圾收集首选需要确定从根开始哪些是可达的和哪些是不可达的，从根集可达的对象都是活动对象，它们不能作为垃圾被回收，这也包括从根集间接可达的对象。而根集通过任意路径不可达的对象符合垃圾收集的条件，应该被回收。
+(每次被问到Java回收问题，都回这个，嘿嘿，原来是有来源的)下面介绍几个常用的算法。
 
-Activity生命周期。
+引用计数法是唯一没有使用根集的垃圾回收的法，该算法使用引用计数器来区分存活对象和不再使用的对象。一般来说，堆中的每个对象对应一个引用计数器。
+当每一次创建一个对象并赋给一个变量时，引用计数器置为1。当对象被赋给任意变量时，引用计数器每次加1当对象出了作用域后(该对象丢弃不再使用)，引用计数器减1，一旦引用计数器为0，对象就满足了垃圾收集的条件。
 
-启动Activity: onCreate()—>onStart()—>onResume()，Activity进入运行状态。
-Activity退居后台: 当前Activity转到新的Activity界面或按Home键回到主屏： onPause()—>onStop()，进入停滞状态。
-Activity返回前台: onRestart()—>onStart()—>onResume()，再次回到运行状态。
-Activity退居后台，且系统内存不足， 系统会杀死这个后台状态的Activity（此时这个Activity引用仍然处在任务栈中，只是这个时候引用指向的对象已经为null），若再次回到这个Activity,则会走onCreate()–>onStart()—>onResume()(将重新走一次Activity的初始化生命周期)
-锁定屏与解锁屏幕 只会调用onPause()，而不会调用onStop()方法，开屏后则调用onResume()
+基于引用计数器的垃圾收集器运行较快，不会长时间中断程序执行，适宜地必须 实时运行的程序。但引用计数器增加了程序执行的开销，因为每次对象赋给新的变量，计数器加1，而每次现有对象出了作用域生，计数器减1。
 
-更多流程分支，请参照以下生命周期流程图 
+2、tracing算法(Tracing Collector)
 
-通过Acitivty的xml标签来改变任务栈的默认行为
+tracing算法是为了解决引用计数法的问题而提出，它使用了根集的概念。基于tracing算法的垃圾收集器从根集开始扫描，识别出哪些对象可达，哪些对象不可达，并用某种方式标记可达对象，例如对每个可达对象设置一个或多个位。在扫描识别过程中，基于tracing算法的垃圾收集也称为标记和清除(mark-and-sweep)垃圾收集器.
 
-使用android:launchMode="standard|singleInstance|singleTask|singleTop"来控制Acivity任务栈。
+3、compacting算法(Compacting Collector)
 
-任务栈是一种后进先出的结构。位于栈顶的Activity处于焦点状态,当按下back按钮的时候,栈内的Activity会一个一个的出栈,并且调用其onDestory()方法。如果栈内没有Activity,那么系统就会回收这个栈,每个APP默认只有一个栈,以APP的包名来命名.
+为了解决堆碎片问题，基于tracing的垃圾回收吸收了Compacting算法的思想，在清除的过程中，算法将所有的对象移到堆的一端，堆的另一端就变成了一个相邻的空闲内存区，收集器会对它移动的所有对象的所有引用进行更新，使得这些引用在新的位置能识别原来 的对象。在基于Compacting算法的收集器的实现中，一般增加句柄和句柄表。
 
-standard : 标准模式,每次启动Activity都会创建一个新的Activity实例,并且将其压入任务栈栈顶,而不管这个Activity是否已经存在。Activity的启动三回调(onCreate()->onStart()->onResume())都会执行。
-singleTop : 栈顶复用模式.这种模式下,如果新Activity已经位于任务栈的栈顶,那么此Activity不会被重新创建,所以它的启动三回调就不会执行,同时Activity的onNewIntent()方法会被回调.如果Activity已经存在但是不在栈顶,那么作用于standard模式一样.
-singleTask: 栈内复用模式.创建这样的Activity的时候,系统会先确认它所需任务栈已经创建,否则先创建任务栈.然后放入Activity,如果栈中已经有一个Activity实例,那么这个Activity就会被调到栈顶,onNewIntent(),并且singleTask会清理在当前Activity上面的所有Activity.(clear top)
-singleInstance : 加强版的singleTask模式,这种模式的Activity只能单独位于一个任务栈内,由于栈内复用的特性,后续请求均不会创建新的Activity,除非这个独特的任务栈被系统销毁了
-Activity的堆栈管理以ActivityRecord为单位,所有的ActivityRecord都放在一个List里面.可以认为一个ActivityRecord就是一个Activity栈
+4、copying算法(Coping Collector)
 
-Activity缓存方法。
+该算法的提出是为了克服句柄的开销和解决堆碎片的垃圾回收。它开始时把堆分成 一个对象 面和多个空闲面， 程序从对象面为对象分配空间，当对象满了，基于coping算法的垃圾 收集就从根集中扫描活动对象，并将每个 活动对象复制到空闲面(使得活动对象所占的内存之间没有空闲洞)，这样空闲面变成了对象面，原来的对象面变成了空闲面，程序会在新的对象面中分配内存。
 
-有a、b两个Activity，当从a进入b之后一段时间，可能系统会把a回收，这时候按back，执行的不是a的onRestart而是onCreate方法，a被重新创建一次，这是a中的临时数据和状态可能就丢失了。
+一种典型的基于coping算法的垃圾回收是stop-and-copy算法，它将堆分成对象面和空闲区域面，在对象面与空闲区域面的切换过程中，程序暂停执行。
 
-可以用Activity中的onSaveInstanceState()回调方法保存临时数据和状态，这个方法一定会在活动被回收之前调用。方法中有一个Bundle参数，putString()、putInt()等方法需要传入两个参数，一个键一个值。数据保存之后会在onCreate中恢复，onCreate也有一个Bundle类型的参数。
+5、generation算法(Generational Collector)
 
-示例代码：
+stop-and-copy垃圾收集器的一个缺陷是收集器必须复制所有的活动对象，这增加了程序等待时间，这是coping算法低效的原因。在程序设计中有这样的规律：多数对象存在的时间比较短，少数的存在时间比较长。因此，generation算法将堆分成两个或多个，每个子堆作为对象的一代(generation)。由于多数对象存在的时间比较短，随着程序丢弃不使用的对象，垃圾收集器将从最年轻的子堆中收集这些对象。在分代式的垃圾收集器运行后，上次运行存活下来的对象移到下一最高代的子堆中，由于老一代的子堆不会经常被回收，因而节省了时间。
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+6、adaptive算法(Adaptive Collector)
 
-        //这里，当Acivity第一次被创建的时候为空
-        //所以我们需要判断一下
-        if( savedInstanceState != null ){
-            savedInstanceState.getString("anAnt");
-        }
-    }
+在特定的情况下，一些垃圾收集算法会优于其它算法。基于Adaptive算法的垃圾收集器就是监控当前堆的使用情况，并将选择适当算法的垃圾收集器。
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+##三．丢弃就被回收？
+该对象在被认定为没有存在的必要时，它所占用的内存就可以被释放。被回收的内存可以用于后续再分配。
 
-        outState.putString("anAnt","Android");
+但是，并不是对象被抛弃后当即被回收的。JVM进程做空间回收有较大的系统开销。如果每当某应用进程丢弃一个对象，就立即回收它的空间，势必会使整个系统的运转效率非常低下。
 
-    }
+前面说过，JVM的垃圾回收机制有多个算法。除了引用计数法是用来判断对象是否已被抛弃外，其它算法是用来确定何时及如何做回收。JVM的垃圾回收机制要在时间和空间之间做个平衡。
 
-一、onSaveInstanceState (Bundle outState)
+因此，为了提高系统效率，垃圾回收器通常只在满足两个条件时才运行：即有对象要回收且系统需要回收。切记垃圾回收要占用时间，因此，Java运行时系统只在需要的时候才使用它。因此你无法知道垃圾回收发生的精确时间。
+##四．没有引用变量指向的对象有用吗？
+前面说了，没挂上引用变量的对象是被应用丢弃的，这意味着，它在堆空间里是个垃圾，随时可能被JVM回收。
 
-当某个activity变得“容易”被系统销毁时，该activity的onSaveInstanceState就会被执行，除非该activity是被用户主动销毁的，例如当用户按BACK键的时候。
+不过，这里有个不是例外的例外。对于一次性使用的对象（有些称之为临时对象），可以不用引用变量指向它。举个最简单也最常见的例子：
 
-注意上面的双引号，何为“容易”？言下之意就是该activity还没有被销毁，而仅仅是一种可能性。这种可能性有哪些？通过重写一个activity的所有生命周期的onXXX方法，包括onSaveInstanceState和onRestoreInstanceState方法，我们可以清楚地知道当某个activity（假定为activity A）显示在当前task的最上层时，其onSaveInstanceState方法会在什么时候被执行，有这么几种情况：
+System.out.println(“I am a example java!”);
 
-1、当用户按下HOME键时。
+就是创建了一个字符串对象后，直接传递给println()方法。
 
-这是显而易见的，系统不知道你按下HOME后要运行多少其他的程序，自然也不知道activity A是否会被销毁，故系统会调用onSaveInstanceState，让用户有机会保存某些非永久性的数据。以下几种情况的分析都遵循该原则
+##五．应用能干预垃圾回收吗？
+许多人对Java的垃圾回收不放心，希望在应用代码里控制JVM的垃圾回收运作。这是不可能的事。对垃圾回收机制来说，应用只有两个途径发消息给JVM。
 
-2、长按HOME键，选择运行其他的程序时。
+第一个前面已经说了，就是将指向某对象的所有引用变量全部移走。这就相当于向JVM发了一个消息：这个对象不要了。第二个是调用库方法System.gc() . (多数书里说调用它让Java做垃圾回收。)
+第一个是一个告知，而调用System.gc()也仅仅是一个请求。JVM接受这个消息后，并不是立即做垃圾回收，而只是对几个垃圾回收算法做了加权，使垃圾回收操作容易发生，或提早发生，或回收较多而已。
 
-3、按下电源按键（关闭屏幕显示）时。
+希望JVM及时回收垃圾，是一种需求。其实，还有相反的一种需要：在某段时间内最好不要回收垃圾。要求运行速度最快的实时系统，特别是嵌入式系统，往往希望如此。
 
-4、从activity A中启动一个新的activity时。
+Java的垃圾回收机制是为所有Java应用进程服务的，而不是为某个特定的进程服务的。因此，任何一个进程都不能命令垃圾回收机制做什么、怎么做或做多少。
 
-5、屏幕方向切换时，例如从竖屏切换到横屏时。（如果不指定configchange属性） 在屏幕切换之前，系统会销毁activity A，在屏幕切换之后系统又会自动地创建activity A，所以onSaveInstanceState一定会被执行
+##在这里， 我们也可以透视Java垃圾回收。
+###1、命令行参数透视垃圾收集器的运行
 
-总而言之，onSaveInstanceState的调用遵循一个重要原则，即当系统“未经你许可”时销毁了你的activity，则onSaveInstanceState会被系统调用，这是系统的责任，因为它必须要提供一个机会让你保存你的数据（当然你不保存那就随便你了）。另外，需要注意的几点：
+###2、使用System.gc()可以不管JVM使用的是哪一种垃圾回收的算法，都可以请求Java的垃圾回收。在命令行中有一个参数-verbosegc可以查看Java使用的堆内存的情况，
 
-1.布局中的每一个View默认实现了onSaveInstanceState()方法，这样的话，这个UI的任何改变都会自动的存储和在activity重新创建的时候自动的恢复。但是这种情况只有在你为这个UI提供了唯一的ID之后才起作用，如果没有提供ID，将不会存储它的状态。
+它的格式如下：
 
-2.由于默认的onSaveInstanceState()方法的实现帮助UI存储它的状态，所以如果你需要覆盖这个方法去存储额外的状态信息时，你应该在执行任何代码之前都调用父类的onSaveInstanceState()方法（super.onSaveInstanceState()）。 既然有现成的可用，那么我们到底还要不要自己实现onSaveInstanceState()?这得看情况了，如果你自己的派生类中有变量影响到UI，或你程序的行为，当然就要把这个变量也保存了，那么就需要自己实现，否则就不需要。
+java -verbosegc classfile
+可以看个例子：
 
-3.由于onSaveInstanceState()方法调用的不确定性，你应该只使用这个方法去记录activity的瞬间状态（UI的状态）。不应该用这个方法去存储持久化数据。当用户离开这个activity的时候应该在onPause()方法中存储持久化数据（例如应该被存储到数据库中的数据）。
+class TestGC {
 
-4.onSaveInstanceState()如果被调用，这个方法会在onStop()前被触发，但系统并不保证是否在onPause()之前或者之后触发。
+    public static void main(String[] args) {
 
-二、onRestoreInstanceState (Bundle outState)
+        new TestGC();
 
-至于onRestoreInstanceState方法，需要注意的是，onSaveInstanceState方法和onRestoreInstanceState方法“不一定”是成对的被调用的，（本人注：我昨晚调试时就发现原来不一定成对被调用的！）
+        System.gc();
 
-onRestoreInstanceState被调用的前提是，activity A“确实”被系统销毁了，而如果仅仅是停留在有这种可能性的情况下，则该方法不会被调用，例如，当正在显示activity A的时候，用户按下HOME键回到主界面，然后用户紧接着又返回到activity A，这种情况下activity A一般不会因为内存的原因被系统销毁，故activity A的onRestoreInstanceState方法不会被执行
+        System.runFinalization();
 
-另外，onRestoreInstanceState的bundle参数也会传递到onCreate方法中，你也可以选择在onCreate方法中做数据还原。 还有onRestoreInstanceState在onstart之后执行。 至于这两个函数的使用，给出示范代码（留意自定义代码在调用super的前或后）：
+    }
 
-@Override
-public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("MyBoolean", true);
-        savedInstanceState.putDouble("myDouble", 1.9);
-        savedInstanceState.putInt("MyInt", 1);
-        savedInstanceState.putString("MyString", "Welcome back to Android");
-        // etc.
-        super.onSaveInstanceState(savedInstanceState);
+}
+在这个例子中，一个新的对象被创建，由于它没有使用，所以该对象迅速地变为可达，程序编译后，执行命令：java -verbosegc TestGC后结果为：
+
+[Full GC 168K->97K(1984K), 0.0253873 secs]
+机器的环境为,箭头前后的数据168K和97K分别表示垃圾收集GC前后所有存活对象使用的内存容量，说明有168K-97K=71K的对象容量被回收，括号内的数据1984K为堆内存的总容量，收集所需要的时间是0.0253873秒（这个时间在每次执行的时候会有所不同）。
+
+###3、finalize方法透视垃圾收集器的运行
+在JVM垃圾收集器收集一个对象之前 ，一般要求程序调用适当的方法释放资源，但在没有明确释放资源的情况下，Java提供了缺省机制来终止化该对象心释放资源，这个方法就是finalize（）。它的原型为：
+
+protected void finalize() throws Throwable
+在finalize()方法返回之后，对象消失，垃圾收集开始执行。原型中的throws Throwable表示它可以抛出任何类型的异常。
+
+之所以要使用finalize()，是由于有时需要采取与Java的普通方法不同的一种方法，通过分配内存来做一些具有C风格的事情。这主要可以通过"固有方法"来进行，它是从Java里调用非Java方法的一种方式。C和C++是目前唯一获得固有方法支持的语言。但由于它们能调用通过其他语言编写的子程序，所以能够有效地调用任何东西。在非Java代码内部，也许能调用C的malloc()系列函数，用它分配存储空间。而且除非调用了free()，否则存储空间不会得到释放，从而造成内存"漏洞"的出现。当然，free()是一个C和C++函数，所以我们需要在finalize()内部的一个固有方法中调用它。也就是说我们不能过多地使用finalize()，它并不是进行普通清除工作的理想场所。
+
+在普通的清除工作中，为清除一个对象，那个对象的用户必须在希望进行清除的地点调用一个清除方法。这与C++"破坏器"的概念稍有抵触。在C++中，所有对象都会破坏（清除）。或者换句话说，所有对象都"应该"破坏。若将C++对象创建成一个本地对象，比如在堆栈中创建（在Java中是不可能的），那么清除或破坏工作就会在"结束花括号"所代表的、创建这个对象的作用域的末尾进行。若对象是用new创建的（类似于Java），那么当程序员调用C++的delete命令时（Java没有这个命令），就会调用相应的破坏器。若程序员忘记了，那么永远不会调用破坏器，我们最终得到的将是一个内存"漏洞"，另外还包括对象的其他部分永远不会得到清除。
+
+相反，Java不允许我们创建本地（局部）对象--无论如何都要使用new。但在Java中，没有"delete"命令来释放对象，因为垃圾收集器会帮助我们自动释放存储空间。所以如果站在比较简化的立场，我们可以说正是由于存在垃圾收集机制，所以Java没有破坏器。然而，随着以后学习的深入，就会知道垃圾收集器的存在并不能完全消除对破坏器的需要，或者说不能消除对破坏器代表的那种机制的需要（而且绝对不能直接调用finalize()，所以应尽量避免用它）。若希望执行除释放存储空间之外的其他某种形式的清除工作，仍然必须调用Java中的一个方法。它等价于C++的破坏器，只是没后者方便。
+
+class Chair {
+
+    static boolean gcrun = false;
+
+    static boolean f = false;
+
+    static int created = 0;
+
+    static int finalized = 0;
+
+    int i;
+
+    Chair() {
+
+        i = ++created;
+
+        if(created == 47)
+
+        System.out.println("Created 47");
+
+    }
+
+    protected void finalize() {
+
+        if(!gcrun) {
+
+            gcrun = true;
+
+            System.out.println("Beginning to finalize after " + created + " Chairs have been               created");
+
+        }
+
+    if(i == 47) {
+
+        System.out.println("Finalizing Chair #47, " +"Setting flag to stop Chair creation");
+
+        f = true;
+
+    }
+
+    finalized++;
+
+    if(finalized >= created) 
+
+    System.out.println("All " + finalized + " finalized");
+
+    }
+
+}
+   
+
+     public static void main(String[] args) {
+
+        if(args.length == 0) {
+
+             System.err.println("Usage: /n" + "java Garbage before/n or:/n" + "java Garbage after");
+
+            return;
+
+        }
+
+        while(!Chair.f) {
+
+            new Chair();
+
+            new String("To take up space");
+
+        }
+
+        System.out.println("After all Chairs have been created:/n" + "total created = " +Chair.created +", total finalized = " + Chair.finalized);
+
+        if(args[0].equals("before")) {
+
+            System.out.println("gc():");
+
+            System.gc();
+
+            System.out.println("runFinalization():");
+
+            System.runFinalization();
+
+        }
+
+         System.out.println("bye!");
+
+         if(args[0].equals("after"))
+
+         System.runFinalizersOnExit(true);
+
+    }
+
 }
 
-@Override
-public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+上面这个程序创建了许多Chair对象,而且在垃圾收集器开始运行后的某些时候，程序会停止创建Chair。由于垃圾收集器可能在任何时间运行，所以我们不能准确知道它在何时启动。因此，程序用一个名为gcrun的标记来指出垃圾收集器是否已经开始运行。利用第二个标记f，Chair可告诉main()它应停止对象的生成。这两个标记都是在finalize()内部设置的，它调用于垃圾收集期间。另两个static变量--created以及finalized--分别用于跟踪已创建的对象数量以及垃圾收集器已进行完收尾工作的对象数量。最后，每个Chair都有它自己的（非static）int i，所以能跟踪了解它具体的编号是多少。编号为47的Chair进行完收尾工作后，标记会设为true，最终结束Chair对象的创建过程。（关于这个例子的更具体的分析和说明请参看《Java编程思想》的第四章）
 
-        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
-        double myDouble = savedInstanceState.getDouble("myDouble");
-        int myInt = savedInstanceState.getInt("MyInt");
-        String myString = savedInstanceState.getString("MyString");
-}
+关于垃圾收集的几点补充
 
-Fragment的生命周期和activity如何的一个关系
+经过上述的说明，可以发现垃圾回收有以下的几个特点：
 
-这我们引用本知识库里的一张图片： Mou icon
+（1）垃圾收集发生的不可预知性：由于实现了不同的垃圾收集算法和采用了不同的收集机制，所以它有可能是定时发生，有可能是当出现系统空闲CPU资源时发生，也有可能是和原始的垃圾收集一样，等到内存消耗出现极限时发生，这与垃圾收集器的选择和具体的设置都有关系。
 
-为什么在Service中创建子线程而不是Activity中
+（2）垃圾收集的精确性：主要包括2个方面：（a）垃圾收集器能够精确标记活着的对象；（b）垃圾收集器能够精确地定位对象之间的引用关系。前者是完全地回收所有废弃对象的前提，否则就可能造成内存泄漏。而后者则是实现归并和复制等算法的必要条件。所有不可达对象都能够可靠地得到回收，所有对象都能够重新分配，允许对象的复制和对象内存的缩并，这样就有效地防止内存的支离破碎。
 
-这是因为Activity很难对Thread进行控制，当Activity被销毁之后，就没有任何其它的办法可以再重新获取到之前创建的子线程的实例。而且在一个Activity中创建的子线程，另一个Activity无法对其进行操作。但是Service就不同了，所有的Activity都可以与Service进行关联，然后可以很方便地操作其中的方法，即使Activity被销毁了，之后只要重新与Service建立关联，就又能够获取到原有的Service中Binder的实例。因此，使用Service来处理后台任务，Activity就可以放心地finish，完全不需要担心无法对后台任务进行控制的情况。
+（3）现在有许多种不同的垃圾收集器，每种有其算法且其表现各异.既有当垃圾收集开始时就停止应用程序的运行，又有当垃圾收集开始时也允许应用程序的线程运行，还有在同一时间垃圾收集多线程运行。
 
-Intent的使用方法，可以传递哪些数据类型。
+（4）垃圾收集的实现和具体的JVM以及JVM的内存模型有非常紧密的关系。不同的JVM可能采用不同的垃圾收集，而JVM的内存模型决定着该JVM可以采用哪些类型垃圾收集。现在，HotSpot系列JVM中的内存系统都采用先进的面向对象的框架设计，这使得该系列JVM都可以采用最先进的垃圾收集。
 
-通过查询Intent/Bundle的API文档，我们可以获知，Intent/Bundle支持传递基本类型的数据和基本类型的数组数据，以及String/CharSequence类型的数据和String/CharSequence类型的数组数据。而对于其它类型的数据貌似无能为力，其实不然，我们可以在Intent/Bundle的API中看到Intent/Bundle还可以传递Parcelable（包裹化，邮包）和Serializable（序列化）类型的数据，以及它们的数组/列表数据。
+（5）随着技术的发展，现代垃圾收集技术提供许多可选的垃圾收集器，而且在配置每种收集器的时候又可以设置不同的参数，这就使得根据不同的应用环境获得最优的应用性能成为可能。
 
-所以要让非基本类型和非String/CharSequence类型的数据通过Intent/Bundle来进行传输，我们就需要在数据类型中实现Parcelable接口或是Serializable接口。
+针对以上特点，我们在使用的时候要注意：
 
-http://blog.csdn.net/kkk0526/article/details/7214247
+（1）不要试图去假定垃圾收集发生的时间，这一切都是未知的。比如，方法中的一个临时对象在方法调用完毕后就变成了无用对象，这个时候它的内存就可以被释放。
 
-Fragment生命周期
+（2）Java中提供了一些和垃圾收集打交道的类，而且提供了一种强行执行垃圾收集的方法--调用System.gc()，但这同样是个不确定的方法。Java中并不保证每次调用该方法就一定能够启动垃圾收集，它只不过会向JVM发出这样一个申请，到底是否真正执行垃圾收集，一切都是个未知数。
 
+（3）挑选适合自己的垃圾收集器。一般来说，如果系统没有特殊和苛刻的性能要求，可以采用JVM的缺省选项。否则可以考虑使用有针对性的垃圾收集器，比如增量收集器就比较适合实时性要求较高的系统之中。系统具有较高的配置，有比较多的闲置资源，可以考虑使用并行标记/清除收集器。
 
+（4）关键的也是难把握的问题是内存泄漏。良好的编程习惯和严谨的编程态度永远是最重要的，不要让自己的一个小错误导致内存出现大漏洞。
 
-注意和Activity的相比的区别,按照执行顺序
+（5）尽早释放无用对象的引用。大多数程序员在使用临时变量的时候，都是让引用变量在退出活动域(scope)后，自动设置为null，暗示垃圾收集器来收集该对象，还必须注意该引用的对象是否被监听，如果有，则要去掉监听器，然后再赋空值。
 
-onAttach(),onDetach()
-onCreateView(),onDestroyView()
-Service的两种启动方法，有什么区别 1.在Context中通过public boolean bindService(Intent service,ServiceConnection conn,int flags) 方法来进行Service与Context的关联并启动，并且Service的生命周期依附于Context(不求同时同分同秒生！但求同时同分同秒屎！！)。
+结束语
 
-2.通过public ComponentName startService(Intent service)方法去启动一个Service，此时Service的生命周期与启动它的Context无关。
+一般来说，Java开发人员可以不重视JVM中堆内存的分配和垃圾处理收集，但是，充分理解Java的这一特性可以让我们更有效地利用资源。同时要注意finalize()方法是Java的缺省机制，有时为确保对象资源的明确释放，可以编写自己的finalize方法。
 
-3.要注意的是，whatever，都需要在xml里注册你的Service，就像这样:
 
-<service
-        android:name=".packnameName.youServiceName"
-        android:enabled="true" />
-广播(Boardcast Receiver)的两种动态注册和静态注册有什么区别。
 
-静态注册：在AndroidManifest.xml文件中进行注册，当App退出后，Receiver仍然可以接收到广播并且进行相应的处理
-动态注册：在代码中动态注册，当App退出后，也就没办法再接受广播了
-ContentProvider使用方法
-
-http://blog.csdn.net/juetion/article/details/17481039
-
-目前能否保证service不被杀死
-
-Service设置成START_STICKY
-
-kill 后会被重启（等待5秒左右），重传Intent，保持与重启前一样
-提升service优先级
-
-在AndroidManifest.xml文件中对于intent-filter可以通过android:priority = "1000"这个属性设置最高优先级，1000是最高值，如果数字越小则优先级越低，同时适用于广播。
-【结论】目前看来，priority这个属性貌似只适用于broadcast，对于Service来说可能无效
-提升service进程优先级
-
-Android中的进程是托管的，当系统进程空间紧张的时候，会依照优先级自动进行进程的回收
-当service运行在低内存的环境时，将会kill掉一些存在的进程。因此进程的优先级将会很重要，可以在startForeground()使用startForeground()将service放到前台状态。这样在低内存时被kill的几率会低一些。
-【结论】如果在极度极度低内存的压力下，该service还是会被kill掉，并且不一定会restart()
-onDestroy方法里重启service
-
-service +broadcast 方式，就是当service走ondestory()的时候，发送一个自定义的广播，当收到广播的时候，重新启动service
-也可以直接在onDestroy()里startService
-【结论】当使用类似口口管家等第三方应用或是在setting里-应用-强制停止时，APP进程可能就直接被干掉了，onDestroy方法都进不来，所以还是无法保证
-监听系统广播判断Service状态
-
-通过系统的一些广播，比如：手机重启、界面唤醒、应用状态改变等等监听并捕获到，然后判断我们的Service是否还存活，别忘记加权限
-【结论】这也能算是一种措施，不过感觉监听多了会导致Service很混乱，带来诸多不便
-在JNI层,用C代码fork一个进程出来
-
-这样产生的进程,会被系统认为是两个不同的进程.但是Android5.0之后可能不行
-root之后放到system/app变成系统级应用
-
-大招: 放一个像素在前台(手机QQ)
-
-动画有哪两类，各有什么特点？三种动画的区别
-
-tween 补间动画。通过指定View的初末状态和变化时间、方式，对View的内容完成一系列的图形变换来实现动画效果。 Alpha Scale Translate Rotate。
-
-frame 帧动画 AnimationDrawable 控制 animation-list xml布局
-
-PropertyAnimation 属性动画
-
-Android的数据存储形式。
-
-SQLite：SQLite是一个轻量级的数据库，支持基本的SQL语法，是常被采用的一种数据存储方式。 Android为此数据库提供了一个名为SQLiteDatabase的类，封装了一些操作数据库的api
-
-SharedPreference： 除SQLite数据库外，另一种常用的数据存储方式，其本质就是一个xml文件，常用于存储较简单的参数设置。
-
-File： 即常说的文件（I/O）存储方法，常用语存储大数量的数据，但是缺点是更新数据将是一件困难的事情。
-
-ContentProvider: Android系统中能实现所有应用程序共享的一种数据存储方式，由于数据通常在各应用间的是互相私密的，所以此存储方式较少使用，但是其又是必不可少的一种存储方式。例如音频，视频，图片和通讯录，一般都可以采用此种方式进行存储。每个Content Provider都会对外提供一个公共的URI（包装成Uri对象），如果应用程序有数据需要共享时，就需要使用Content Provider为这些数据定义一个URI，然后其他的应用程序就通过Content Provider传入这个URI来对数据进行操作。
-
-Sqlite的基本操作。
-
-http://blog.csdn.net/zgljl2012/article/details/44769043
-
-如何判断应用被强杀
-
-在Applicatio中定义一个static常量，赋值为－1，在欢迎界面改为0，如果被强杀，application重新初始化，在父类Activity判断该常量的值。
-
-应用被强杀如何解决
-
-如果在每一个Activity的onCreate里判断是否被强杀，冗余了，封装到Activity的父类中，如果被强杀，跳转回主界面，如果没有被强杀，执行Activity的初始化操作，给主界面传递intent参数，主界面会调用onNewIntent方法，在onNewIntent跳转到欢迎页面，重新来一遍流程。
-
-Json有什么优劣势。
-
-怎样退出终止App
-
-Asset目录与res目录的区别。
-
-Android怎么加速启动Activity。
-
-Android内存优化方法：ListView优化，及时关闭资源，图片缓存等等。
-
-Android中弱引用与软引用的应用场景。
-
-Bitmap的四种属性，与每种属性队形的大小。
-
-View与View Group分类。自定义View过程：onMeasure()、onLayout()、onDraw()。
-
-如何自定义控件：
-
-自定义属性的声明和获取
-
-分析需要的自定义属性
-在res/values/attrs.xml定义声明
-在layout文件中进行使用
-在View的构造方法中进行获取
-测量onMeasure
-布局onLayout(ViewGroup)
-绘制onDraw
-onTouchEvent
-onInterceptTouchEvent(ViewGroup)
-状态的恢复与保存
-Android长连接，怎么处理心跳机制。
-
-View树绘制流程
-
-下拉刷新实现原理
-
-你用过什么框架，是否看过源码，是否知道底层原理。
-
-Retrofit
-
-EventBus
-
-glide
-
-Android5.0、6.0新特性。
-
-Android5.0新特性：
-
-MaterialDesign设计风格
-支持多种设备
-支持64位ART虚拟机
-Android6.0新特性
-
-大量漂亮流畅的动画
-支持快速充电的切换
-支持文件夹拖拽应用
-相机新增专业模式
-Android7.0新特性
-
-分屏多任务
-增强的Java8语言模式
-夜间模式
-Context区别
-
-Activity和Service以及Application的Context是不一样的,Activity继承自ContextThemeWraper.其他的继承自ContextWrapper
-每一个Activity和Service以及Application的Context都是一个新的ContextImpl对象
-getApplication()用来获取Application实例的，但是这个方法只有在Activity和Service中才能调用的到。那么也许在绝大多数情况下我们都是在Activity或者Service中使用Application的，但是如果在一些其它的场景，比如BroadcastReceiver中也想获得Application的实例，这时就可以借助getApplicationContext()方法，getApplicationContext()比getApplication()方法的作用域会更广一些，任何一个Context的实例，只要调用getApplicationContext()方法都可以拿到我们的Application对象。
-Activity在创建的时候会new一个ContextImpl对象并在attach方法中关联它，Application和Service也差不多。ContextWrapper的方法内部都是转调ContextImpl的方法
-创建对话框传入Application的Context是不可以的
-尽管Application、Activity、Service都有自己的ContextImpl，并且每个ContextImpl都有自己的mResources成员，但是由于它们的mResources成员都来自于唯一的ResourcesManager实例，所以它们看似不同的mResources其实都指向的是同一块内存
-Context的数量等于Activity的个数 + Service的个数 + 1，这个1为Application
-IntentService的使用场景与特点。
-
-IntentService是Service的子类，是一个异步的，会自动停止的服务，很好解决了传统的Service中处理完耗时操作忘记停止并销毁Service的问题
-优点：
-
-一方面不需要自己去new Thread
-另一方面不需要考虑在什么时候关闭该Service
-onStartCommand中回调了onStart，onStart中通过mServiceHandler发送消息到该handler的handleMessage中去。最后handleMessage中回调onHandleIntent(intent)。
-
-图片缓存
-
-查看每个应用程序最高可用内存：
-
-    int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);  
-    Log.d("TAG", "Max memory is " + maxMemory + "KB");  
-Gradle
-
-构建工具、Groovy语法、Java
-
-Jar包里面只有代码，aar里面不光有代码还包括
-
-你是如何自学Android
-
-首先是看书和看视频敲代码，然后看大牛的博客，做一些项目，向github提交代码，觉得自己API掌握的不错之后，开始看进阶的书，以及看源码，看完源码学习到一些思想，开始自己造轮子，开始想代码的提升，比如设计模式，架构，重构等。
