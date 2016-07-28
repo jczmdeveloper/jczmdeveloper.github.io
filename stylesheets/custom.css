@@ -26,5 +26,6 @@
     }
  .nav ul li a:hover {
         background-color: #0090FF;
+        text-decoration:none;
         
     }
