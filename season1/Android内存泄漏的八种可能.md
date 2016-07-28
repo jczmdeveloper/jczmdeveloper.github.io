@@ -1,4 +1,4 @@
-Android内存泄漏的八种可能
+#Android内存泄漏的八种可能
 
 Java是垃圾回收语言的一种，其优点是开发者无需特意管理内存分配，降低了应用由于局部故障(segmentation fault)导致崩溃，同时防止未释放的内存把堆栈(heap)挤爆的可能，所以写出来的代码更为安全。
 
@@ -7,7 +7,7 @@ Java是垃圾回收语言的一种，其优点是开发者无需特意管理内�
 一般内存泄漏(traditional memory leak)的原因是：由忘记释放分配的内存导致的。（译者注：Cursor忘记关闭等）
 逻辑内存泄漏(logical memory leak)的原因是：当应用不再需要这个对象，当仍未释放该对象的所有引用。
 
-如果持有对象的强引用，垃圾回收器是无法在内存中回收这个对象。
+##如果持有对象的强引用，垃圾回收器是无法在内存中回收这个对象。
 
 在Android开发中，最容易引发的内存泄漏问题的是Context。比如Activity的Context，就包含大量的内存引用，例如View Hierarchies和其他资源。一旦泄漏了Context，也意味泄漏它指向的所有对象。Android机器内存有限，太多的内存泄漏容易导致OOM。
 
@@ -21,7 +21,7 @@ Activity是重量级对象，应该让Android系统来处理它。然而，逻�
 活在Activity生命周期之外的线程。没有清空对Activity的强引用。
 检查一下你有没有遇到下列的情况。
 
-Static Activities
+##Static Activities
 在类中定义了静态Activity变量，把当前运行的Activity实例赋值于这个静态变量。
 如果这个静态变量在Activity生命周期结束后没有清空，就导致内存泄漏。因为static变量是贯穿这个应用的生命周期的，所以被泄漏的Activity就会一直存在于应用的进程中，不会被垃圾回收器回收。
 
@@ -40,7 +40,7 @@ Static Activities
     });
 
 Memory Leak 1 - Static Activity
-Static Views
+##Static Views
 类似的情况会发生在单例模式中，如果Activity经常被用到，那么在内存中保存一个实例是很实用的。正如之前所述，强制延长Activity的生命周期是相当危险而且不必要的，无论如何都不能这样做。
 
 特殊情况：如果一个View初始化耗费大量资源，而且在一个Activity生命周期内保持不变，那可以把它变成static，加载到视图树上(View Hierachy)，像这样，当Activity被销毁时，应当释放资源。（译者注：示例代码中并没有释放内存，把这个static view置null即可，但是还是不建议用这个static view的方法）
@@ -60,7 +60,7 @@ Static Views
     });
 
 Memory Leak 2 - Static View
-Inner Classes
+##Inner Classes
 继续，假设Activity中有个内部类，这样做可以提高可读性和封装性。将如我们创建一个内部类，而且持有一个静态变量的引用，恭喜，内存泄漏就离你不远了（译者注：销毁的时候置空，嗯）。
 
        private static Object inner;
@@ -82,7 +82,7 @@ Inner Classes
 Memory Leak 3 - Inner Class
 内部类的优势之一就是可以访问外部类，不幸的是，导致内存泄漏的原因，就是内部类持有外部类实例的强引用。
 
-Anonymous Classes
+##Anonymous Classes
 相似地，匿名类也维护了外部类的引用。所以内存泄漏很容易发生，当你在Activity中定义了匿名的AsyncTsk
 。当异步任务在后台执行耗时任务期间，Activity不幸被销毁了（译者注：用户退出，系统回收），这个被AsyncTask持有的Activity实例就不会被垃圾回收器回收，直到异步任务结束。
 
@@ -105,7 +105,7 @@ Anonymous Classes
     });
 
 Memory Leak 4 - AsyncTask
-Handler
+##Handler
 同样道理，定义匿名的Runnable，用匿名类Handler执行。Runnable内部类会持有外部类的隐式引用，被传递到Handler的消息队列MessageQueue中，在Message消息没有被处理之前，Activity实例不会被销毁了，于是导致内存泄漏。
 
     void createHandler() {
@@ -130,7 +130,7 @@ Handler
     });
 
 Memory Leak 5 - Handler
-Threads
+##Threads
 我们再次通过Thread和TimerTask来展现内存泄漏。
 
     void spawnThread() {
@@ -150,7 +150,7 @@ Threads
     });
 
 Memory Leak 6 - Thread
-TimerTask
+##TimerTask
 只要是匿名类的实例，不管是不是在工作线程，都会持有Activity的引用，导致内存泄漏。
 
      void scheduleTimer() {
@@ -171,7 +171,7 @@ TimerTask
     });
 
 Memory Leak 7 - TimerTask
-Sensor Manager
+##Sensor Manager
 最后，通过Context.getSystemService(int name)可以获取系统服务。这些服务工作在各自的进程中，帮助应用处理后台任务，处理硬件交互。如果需要使用这些服务，可以注册监听器，这会导致服务持有了Context的引用，如果在Activity销毁的时候没有注销这些监听器，会导致内存泄漏。
 
         void registerListener() {
@@ -189,7 +189,7 @@ Sensor Manager
         });
 
 Memory Leak 8 - Sensor Manager
-总结
+##总结
 看过那么多会导致内存泄漏的例子，容易导致吃光手机的内存使垃圾回收处理更为频发，甚至最坏的情况会导致OOM。垃圾回收的操作是很昂贵的开销，会导致肉眼可见的卡顿。所以，实例化的时候注意持有的引用链，并经常进行内存泄漏检查。
 
 文／豆沙包lo（简书作者）
