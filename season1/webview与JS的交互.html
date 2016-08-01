@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)http://www.cnblogs.com/tugenhua0707/p/4550228.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>webview与JS的交互 - 空智 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./webview与JS的交互_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./webview与JS的交互_files/bundle-Minyx2_Lite.css">
+<link type="text/css" rel="stylesheet" href="./webview与JS的交互_files/161525.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/tugenhua0707/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/tugenhua0707/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/tugenhua0707/wlwmanifest.xml">
+<script type="text/javascript" src="./webview与JS的交互_files/encoder.js"></script><script src="./webview与JS的交互_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'tugenhua0707', cb_enable_mathjax=true;</script>
+<script src="./webview与JS的交互_files/blog-common.js" type="text/javascript"></script>
+<script src="./webview与JS的交互_files/bundle-Minyx2_Lite.js" language="javascript" type="text/javascript"></script>
+<script type="text/x-mathjax-config;executed=true">MathJax.Hub.Config({
+  tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] },
+  TeX: { equationNumbers: { autoNumber: ['AMS'], useLabelIds: true } },
+  'HTML-CSS': { linebreaks: { automatic: true } },
+  SVG: { linebreaks: { automatic: true } }});</script><script type="text/javascript" src="./webview与JS的交互_files/MathJax.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+<body><div id="MathJax_Message" style="display: none;"></div>
+<a name="top"></a>
+
+
+<div id="container">
+    <a class="minyx" href="http://www.cnblogs.com/">代码改变世界</a>
+    <ul id="topMnu">
+        <!-- 统计数据 -->
+        <li>
+            
+                
+Posts - 170, 
+Articles - 1, 
+Comments - 791
+<!---->
+            
+        </li>
+        <!-- 这边可以增加一些链接 -->
+        <!-- 博客园 -->
+        <li><a href="http://www.cnblogs.com/">Cnblogs</a></li>
+        <!-- 管理 -->
+        <li id="topMnu-dashboard">
+            <a id="lnkDashboard" href="http://www.cnblogs.com/tugenhua0707/admin/EditPosts.aspx">Dashboard</a></li>
+        <li>
+            <a id="lnkLogin" href="http://passport.cnblogs.com/logout.aspx?ReturnUrl=http://www.cnblogs.com/tugenhua0707/p/4550228.html">Logout</a></li>
+    </ul>
+
+    <script type="text/javascript">
+        var m = window.__blog.topMenuRendered;
+        if (m) { m(__$("topMnu")); }
+    </script>
+
+    <div id="header">
+        <ul id="menu">
+            <!-- 首页，当前section加上current类 -->
+            <li id="menu-home" class="current">
+                <a id="lnkHome" href="http://www.cnblogs.com/tugenhua0707/">Home</a></li>
+            <!-- 联系 -->
+            <li id="menu-contact">
+                <a id="lnkContact" href="http://space.cnblogs.com/msg/send/%e7%a9%ba%e6%99%ba">Contact</a></li>
+            <!-- 相册 -->
+            <li id="menu-gallary">
+                <a id="lnkGallery" href="http://www.cnblogs.com/tugenhua0707/gallery.html">Gallery</a></li>
+            <!-- Rss订阅 -->
+            <li id="rss">
+                <a id="lnkRss" href="http://www.cnblogs.com/tugenhua0707/rss">RSS</a></li>
+        </ul>
+        <div id="newmsg"></div>
+        <h1>
+            <!-- 主标题 -->
+            <a id="lnkBlogTitle" href="http://www.cnblogs.com/tugenhua0707/">空智</a>
+            <!-- 子标题 -->
+            <small>
+                </small>
+        </h1>
+    </div>
+
+    <script type="text/javascript">
+        var m = window.__blog.headerRendered;
+        if (m) { m(__$("header")); }
+    </script>
+
+    <div id="wrapper">
+        <div id="content">
+            <script type="text/javascript">
+                var m = window.__blog.preRenderPosts;
+                if (m) { m(); }
+            </script>
+            
+<div id="post_detail">
+<div class="post" id="post">
+    <a name="top"></a>
+    <h2><a id="cb_post_title_url" href="./webview与JS的交互_files/webview与JS的交互.html">webview与JS的交互</a></h2>
+    <small>2015-06-03 20:54 by 空智, <span id="post_view_count">1964</span> 阅读, <span id="post_comment_count">3</span> 评论, <a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#" onclick="AddToWz(4550228);return false;">收藏</a>,  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=4550228" rel="nofollow">编辑</a></small>
+    <div class="entry">
+        <div id="cnblogs_post_body"><p style="background: #999; color: #fff; font-size: 24px; height: 40px; line-height: 40px; padding-left: 12px; font-weight: bold;">webview与JS的交互</p>
+<p><strong>一：hybird app, web app 和 native app 的区别</strong></p>
+<table style="width: 100%;" border="0">
+<tbody>
+<tr>
+<td>&nbsp;</td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">Web App</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">Hybird App</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">混合Native App</span></td>
+</tr>
+<tr>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">开发成本</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">低</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">中</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">高</span></td>
+</tr>
+<tr>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">维护更新</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">简单</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">简单</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">复杂</span></td>
+</tr>
+<tr>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">体验</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">差</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">优</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">优</span></td>
+</tr>
+<tr>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">跨平台</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">优</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">优</span></td>
+<td><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">差</span></td>
+</tr>
+</tbody>
+</table>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp;Native App是一种基于智能手机本地操作系统如IOS，Android等并运用原生程序编写运行的第三方运用程序，也叫本地App。</span></p>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; &nbsp; Web App 是针对Iphone，Android优化后的web站点，前端使用的技术是：html5，css，javascript等，服务器端技术是java，php，asp等。需要注意的是web app开发还是比较有限的。因为Web APP开发不能整合设备的核心功能，比如发文本信息，也不能充分使用APP Store进行更新。但是Web APP开发也有其优势所在。</span><br><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; &nbsp; &nbsp;首先它解决了iphone APP的可扩展性问题，因为它是可以跨平台使用的。比如你开发了一款Web App，那么它既可以在手机iphone上使用，也可以再平板ipad上使用，而不像iphone APP那样只针对某个平台。</span><br><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; &nbsp; &nbsp;其次web APP也绕开了APP&nbsp;store严格的提交和更新审查规则。众所周知，随着APP store中的APP逐渐增多，APP store也推出了一系列的提交和审查规则，可谓相当之严格。而web APP则绕开了这些提交和更新审查规则，从而使得web APP的升级和维护变得更容易。因为它是一个独立的站点，而不是依附于app store上的，不管是升级还是维护在客户端进行即可，无需提交审核。</span></p>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">Hybird App通常分为三种类型：多view混合型，单View混合型，web主体型。</span></p>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; &nbsp;<strong>1. 多view混合型：</strong></span></p>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; &nbsp;即Native View和web View独立展现，交替出现。目前常见的Hybird App是Native View与web View交替出现，这种应用混合逻辑相对简单，即在需要的时候，将webView当成一个独立的view(Activity)运行起来，在webview内完成相关的展示操作。这种移动运用主体通常是 Native App,&nbsp; web技术只起到补充作用。开发难度和Native App相当。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp; &nbsp; <strong>&nbsp;2. 单view混合型：</strong></span></p>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; &nbsp;即在同一个View内，同时包括Native View和Web View。互相之间是覆盖（层叠）的关系。这种Hybrid App的开发成本较高，开发难度较大，但是体验较好。如百度搜索为代表的单View混合型移动应用，既可以实现充分的灵活性，又能实现较好的用户体验。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp; &nbsp; <strong>3. Web主体型：</strong></span></p>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">&nbsp; &nbsp; 即移动应用的主体是Web View，主要以网页语言编写，穿插Native功能的Hybrid App开发类型。这种类型开发的移动应用体验相对而言存在缺陷，但整体开发难度大幅降低，并且基本可以实现跨平台。Web主体型的移动应用用户体验的好坏，主要取决于底层中间件的交互与跨平台的能力。国外的appMobi、PhoneGap，国内的AppCan和Rexsee都属于Web主体型移动应用中间件。其中Rexsee不支持跨平台开发。appMobi和PhoneGap除基础的底层能力更多是通过插件（Plugins）扩展的机制实现Hybrid。而AppCan除了插件机制，还提供了大量的单View混合型的接口来完善和弥补Web主体型Hybrid App体验差的问题，接近Native App的体验。</span></p>
+<p><strong>以上的知识点是从这边参考的</strong>： <a href="http://www.gtuanb.com/a/yd/2013/1231/127.html" target="_blank">http://www.gtuanb.com/a/yd/2013/1231/127.html</a></p>
+<p style="background: #999; color: #fff; font-size: 24px; height: 40px; line-height: 40px; padding-left: 12px; font-weight: bold;">二：Android webview与js的交互方式</p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>&nbsp; 1.&nbsp;关于webview。</strong></span></p>
+<p>&nbsp; &nbsp; &nbsp;<span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">我们知道目前android市场上的一些应用采用的开发方式分为三种：Native App，web App，Hybird App 。下面介绍Hybird App中实现的主要技术native组件与JS的数据交互的理解。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp; &nbsp;Android API中提供了webview组件来实现对html渲染，所谓的HybridApp开发方式即是汇集了HTML5、CSS3、jS的相关开发技术，以及数据交换格式json/XML。 &nbsp;</span><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">下面是Android_webview 与 JS交互的步骤如下：</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">1. &nbsp;新建一个webview的布局webview.xml</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"<span style="color: #000000;">
+    android:layout_width</span>="match_parent"<span style="color: #000000;">
+    android:layout_height</span>="match_parent"<span style="color: #000000;">
+    android:orientation</span>="vertical" &gt;
+    
+    &lt;<span style="color: #000000;">WebView
+        android:id</span>="@+id/webview"<span style="color: #000000;">
+        android:layout_width</span>="match_parent"<span style="color: #000000;">
+        android:layout_height</span>="match_parent" /&gt;
+&lt;/LinearLayout&gt;</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">如果应用中需要用到多个webview的界面，那只要写一个布局就够了。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">2. &nbsp;在activity中初始化webview</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp; &nbsp; &nbsp;1. &nbsp;初始化布局</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">setContentView(R.layout.exam);
+webView </span>=<span style="color: #000000;"> (WebView) findViewById(R.id.webview);        
+webView.setScrollBarStyle(</span>0);<span style="color: #008000;">//</span><span style="color: #008000;">滚动条风格，为0指滚动条不占用空间，直接覆盖在网页上</span></pre>
+</div>
+<p>&nbsp; &nbsp; &nbsp;<span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;"> 2.&nbsp;添加设置，使js代码能运行</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre>WebSettings setting =<span style="color: #000000;"> webView.getSettings();
+setting.setJavaScriptEnabled(</span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setJavaScriptCanOpenWindowsAutomatically(</span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setAllowFileAccess(</span><span style="color: #0000ff;">true</span>);<span style="color: #008000;">//</span><span style="color: #008000;"> 设置允许访问文件数据</span>
+setting.setSupportZoom(<span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setBuiltInZoomControls(</span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setJavaScriptCanOpenWindowsAutomatically(</span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+setting.setDomStorageEnabled(</span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setDatabaseEnabled(</span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+setting.setDefaultTextEncodingName(</span>"GBK");<span style="color: #008000;">//</span><span style="color: #008000;">设置字符编码</span>
+webView.addJavascriptInterface(<span style="color: #0000ff;">new</span> AndroidForJs(<span style="color: #0000ff;">this</span>), "JavaScriptInterface");</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">设置完这些后会发现在调试js代码时还是不能弹出alert对话框调式代码，上网查了之后发现是要添加如下代码：</span></p>
+<div class="cnblogs_code">
+<pre>webView.setWebChromeClient(<span style="color: #0000ff;">new</span> WebChromeClient());</pre>
+</div>
+<p>&nbsp; &nbsp; <span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">3. &nbsp;装载html5页面</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp; &nbsp; &nbsp; &nbsp; 本地界面：webView.loadUrl("file:///android_asset/test.html");，其中test.html页面是放在assets文件夹下。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp; &nbsp; &nbsp; &nbsp; 在线界面：webView.loadUrl("http://www.baidu.com");</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">3. &nbsp;具体的交互如下：</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">（1）js调用native代码</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">上面的代码中&nbsp;<em>webView</em>.addJavascriptInterface(<strong>new</strong> AndroidForJs(<strong>this</strong>), "JavaScriptInterface");</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">其中AndroidForJs就是专门用来放js调用native的代码的，"JavaScriptInterface"就是js调用AndroidForJs时的名称，先写一个AndroidForJs.java代码如下：</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #000000;">public class AndroidForJs {
+
+      private Context mContext;
+      private String cmdCode, resultKey;
+      private </span><span style="color: #0000ff;">long</span><span style="color: #000000;"> visitTime;
+
+    public AndroidForJs(Context context) {
+        </span><span style="color: #0000ff;">this</span>.mContext =<span style="color: #000000;"> context;
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 以json实现webview与js之间的数据交互</span>
+<span style="color: #000000;">    public String jsontohtml(String abc) {
+        JSONObject map;
+        JSONArray array </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> JSONArray();
+        </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+            map </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> JSONObject();
+            map.put(</span>"name"<span style="color: #000000;">, abc);
+            map.put(</span>"age", 25<span style="color: #000000;">);
+            map.put(</span>"address"<span style="color: #000000;">, abc);
+            array.put(map);
+
+            map </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> JSONObject();
+            map.put(</span>"name", "jacky"<span style="color: #000000;">);
+            map.put(</span>"age", 22<span style="color: #000000;">);
+            map.put(</span>"address", "中国北京"<span style="color: #000000;">);
+            array.put(map);
+
+            map </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> JSONObject();
+            map.put(</span>"name", "vans"<span style="color: #000000;">);
+            map.put(</span>"age", 26<span style="color: #000000;">);
+            map.put(</span>"address", "中国深圳"<span style="color: #000000;">);
+            map.put(</span>"phone", "13888888888"<span style="color: #000000;">);
+            array.put(map);
+        } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (JSONException e) {
+            e.printStackTrace();
+        }
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> array.toString();
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">上面的都是android(java)方法的配置项，前端不需要做任何事情。下面如下方法是前端调用native方法。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>然后在</strong><strong>js</strong><strong>中可以用如下方式调用</strong><strong>native</strong><strong>方法</strong></span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">var result = JavaScriptInterface.jsontohtml("uyiyu");</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">其中"uyiyu"就是js传给native的参数，需要的话就把参数传过去，不需要的话就不传。看具体的需求。其中jsontohtml是java中的一个方法。也可以改成其他的方法名。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">result是native方法返回的值.<strong>一般是返回前端json</strong><strong>数据，但是使用这种方式有问题，前端拿不到返回的数据，我们可以接着往下看。</strong></span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>注意：</strong>项目中遇到的问题是如果调用的native方法如果是一个向服务器发起请求的方法，如下：</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #000000;">public String jsontohtml () {
+        String result </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+        cmdCode </span>= "123"<span style="color: #000000;">;
+        visitTime </span>= System.currentTimeMillis() / 1000<span style="color: #000000;">;
+        resultKey </span>=<span style="color: #000000;"> Utils.getResultKey(cmdCode, visitTime, mContext);
+        String key </span>=<span style="color: #000000;"> Utils.getKey(cmdCode, visitTime, mContext);
+        final String url </span>=<span style="color: #000000;"> Utils.getMainUrl(key, cmdCode, visitTime,
+                AllServerPort.URL_GET_EQUIPMENT, mContext);
+        LogUtil.d(url);
+        </span><span style="color: #0000ff;">new</span> HttpGetData(mContext, <span style="color: #0000ff;">new</span><span style="color: #000000;"> CallBack() {
+
+            @Override
+            public </span><span style="color: #0000ff;">void</span><span style="color: #000000;"> handlerData(String result) {
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> TODO Auto-generated method</span>
+                <span style="color: #008000;">//</span><span style="color: #008000;"> stub</span>
+                LogUtil.d("-----RESPONSE------" +<span style="color: #000000;"> result);
+                Map</span>&lt;String, String&gt; backMsg =<span style="color: #000000;"> Utils.parseResponseResult(
+                        mContext, result, cmdCode, visitTime, resultKey);
+                </span><span style="color: #0000ff;">if</span> (backMsg.get(Constant.BACK_FLAG).equals("1"<span style="color: #000000;">)) {
+                    String body </span>=<span style="color: #000000;"> backMsg.get(Constant.BACK_BODY);
+                    JSONObject jsonBody;
+                    JSONArray jsonArray </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+                    </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+                        jsonBody </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> JSONObject(body);
+                        jsonArray </span>= jsonBody.getJSONArray("dispatchKitList"<span style="color: #000000;">);
+                    } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (JSONException e) {
+                        </span><span style="color: #008000;">//</span><span style="color: #008000;"> TODO Auto-generated catch block</span>
+<span style="color: #000000;">                        e.printStackTrace();
+                    }
+                    result </span>=<span style="color: #000000;"> jsonArray.toString();
+                    LogUtil.d(</span>"------------success--------------" +<span style="color: #000000;"> jsonArray.toString());
+                }
+
+            }
+        }, url).start();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+    }</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">这时如果还用var result = JavaScriptInterface.jsontohtml ();这个方法会发现获取的result是null的，这是因为java中向服务器请求后到服务器返回结果进入回调函数handlerData是需要一段时间的，而js没有等待这段时间就从java获取了返回值，这时result还没被赋值，就为空了，解决的方法只能是native从服务器端获取到数据后再调用js的方法把结果传给js。所以上述方法改为</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #000000;">public String jsontohtml () {
+        String result </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+        cmdCode </span>= "123"<span style="color: #000000;">;
+        visitTime </span>= System.currentTimeMillis() / 1000<span style="color: #000000;">;
+        resultKey </span>=<span style="color: #000000;"> Utils.getResultKey(cmdCode, visitTime, mContext);
+        String key </span>=<span style="color: #000000;"> Utils.getKey(cmdCode, visitTime, mContext);
+        final String url </span>=<span style="color: #000000;"> Utils.getMainUrl(key, cmdCode, visitTime,
+                AllServerPort.URL_GET_EQUIPMENT, mContext);
+        LogUtil.d(url);
+        </span><span style="color: #0000ff;">new</span> HttpGetData(mContext, <span style="color: #0000ff;">new</span><span style="color: #000000;"> CallBack() {
+
+            @Override
+            public </span><span style="color: #0000ff;">void</span><span style="color: #000000;"> handlerData(String result) {
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> TODO Auto-generated method</span>
+                <span style="color: #008000;">//</span><span style="color: #008000;"> stub</span>
+                LogUtil.d("-----RESPONSE------" +<span style="color: #000000;"> result);
+                Map</span>&lt;String, String&gt; backMsg =<span style="color: #000000;"> Utils.parseResponseResult(
+                        mContext, result, cmdCode, visitTime, resultKey);
+                </span><span style="color: #0000ff;">if</span> (backMsg.get(Constant.BACK_FLAG).equals("1"<span style="color: #000000;">)) {
+                    String body </span>=<span style="color: #000000;"> backMsg.get(Constant.BACK_BODY);
+                    JSONObject jsonBody;
+                    JSONArray jsonArray </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+                    </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+                        jsonBody </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> JSONObject(body);
+                        jsonArray </span>= jsonBody.getJSONArray("dispatchKitList"<span style="color: #000000;">);
+                    } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (JSONException e) {
+                        </span><span style="color: #008000;">//</span><span style="color: #008000;"> TODO Auto-generated catch block</span>
+<span style="color: #000000;">                        e.printStackTrace();
+                    }
+                    Message message </span>=<span style="color: #000000;"> MyEquipmentActivity.handler.obtainMessage();
+                    message.what </span>=<span style="color: #000000;"> Constant.HANDLER_SHOW_EQUIPMENT;
+
+                    message.obj </span>=<span style="color: #000000;"> jsonArray.toString();
+                    MyEquipmentActivity.handler.sendMessage(message);
+                    LogUtil.d(</span>"------------success--------------" +<span style="color: #000000;"> jsonArray.toString());
+                }
+
+            }
+        }, url).start();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+    }</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">Handler中调用js方法</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre>public static Handler handler = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Handler() {
+
+        @Override
+        public </span><span style="color: #0000ff;">void</span><span style="color: #000000;"> handleMessage(Message msg) {
+            </span><span style="color: #008000;">//</span><span style="color: #008000;"> TODO Auto-generated method stub</span>
+<span style="color: #000000;">            super.handleMessage(msg);
+            String handlerMsg </span>= ""<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">if</span> (msg.obj != <span style="color: #0000ff;">null</span><span style="color: #000000;">) {
+                handlerMsg </span>=<span style="color: #000000;"> msg.obj.toString();
+            }
+            </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (msg.what) {
+            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Constant.HANDLER_SHOW_EQUIPMENT:
+                webView.loadUrl(</span>"javascript:getEquipmentSuccess('" + handlerMsg + "')"<span style="color: #000000;">);
+                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;            
+            </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+            }
+        }
+
+    };</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p align="left"><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>如上代码：</strong><em>webView</em>.loadUrl("javascript:jsontohtmlSuccess('" + handlerMsg + "')");</span></p>
+<p><span style="color: #ff0000; font-family: &#39;Microsoft YaHei&#39;; font-size: 16px; background-color: #ffffff;"><strong>js</strong><strong>中调用</strong><strong>native</strong><strong>方法拿</strong><strong>JSON</strong><strong>数据最终方案：</strong></span></p>
+<p align="left"><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">前端只需要如下调用即可：</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> jsontohtmlSuccess (json) {
+
+    </span><span style="color: #0000ff;">var</span> data = eval("("+json+")");<span style="color: #008000;">//</span><span style="color: #008000;">解析json字符串</span>
+
+    <span style="color: #008000;">//</span><span style="color: #008000;"> data 就是我们从开发那边拿回来的json数据了。</span>
+<span style="color: #000000;">
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>2）&nbsp;native</strong><strong>调用js</strong><strong>方法</strong></span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">常见的方法是</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">不带参数：webView.loadUrl("javascript:submit()");</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">带参数：webView.loadUrl("javascript:getListSuccess('" + handlerMsg + "')");</span></p>
+<p align="left"><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">目前程序中使用的方法就是这个，但是因为用这个方法无法获取js return的参数，所以需要来回互相调用才能完成一次交互，比较麻烦。</span></p>
+<p align="left"><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>3)&nbsp;即上面可知：开发有2种（带参数和不带参数）方法调用前端代码</strong>，如下：</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">不带参数：webView.loadUrl("javascript:submit()");</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">带参数：webView.loadUrl("javascript:getListSuccess('" + handlerMsg + "')");</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp;其中submit是我们javascript中的一个方法名称。如下可以这样写代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> submit(){
+      </span><span style="color: #0000ff;">var</span> result = {“json”:””};  <span style="color: #008000;">//</span><span style="color: #008000;"> json数据</span>
+<span style="color: #000000;">       JavaScriptInterface.submitResult(result);
+ }</span></pre>
+</div>
+<p align="left"><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">Json数据使用result变量保存起来，之后使用JavaScriptInterface.submitResult(result)方法调用即可。submitResult是java方法，不用管！开发通过上面的代码就可以拿到我们前端的返回数据。</span></p>
+<p align="left"><span style="color: #ff0000; font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>综合所述：</strong></span></p>
+<p align="left"><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>&nbsp;1.&nbsp; </strong><strong>js</strong><strong>中调用</strong><strong>native</strong><strong>方法拿</strong><strong>JSON</strong><strong>数据最终方案：</strong></span></p>
+<p align="left"><span style="color: #ff0000; font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;"><strong>&nbsp; &nbsp; &nbsp;前端只需要如下调用即可：</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> jsontohtmlSuccess(json) {
+    </span><span style="color: #0000ff;">var</span> data = eval("("+json+")");<span style="color: #008000;">//</span><span style="color: #008000;">解析json字符串</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> data 就是我们从开发那边拿回来的json数据了。</span>
+}</pre>
+</div>
+<p><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;">服务器端需要有这个方法：</span></p>
+<p align="left"><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;"><strong><em>webView</em>.loadUrl("javascript:jsontohtmlSuccess('" + handlerMsg + "')");</strong></span></p>
+<p align="left"><span style="font-size: 16px; font-family: &#39;Microsoft YaHei&#39;;"><strong>2. &nbsp;</strong><strong style="line-height: 1.5;">JS</strong><strong style="line-height: 1.5;">中的数据返回给native</strong><strong style="line-height: 1.5;">端。如下代码：</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> submit(){
+    </span><span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> {“json”:””};
+    JavaScriptInterface.submitResult(result);
+}</span></pre>
+</div>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">服务器端 需要有这个调用方法：</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">webView.loadUrl("javascript:submit()");&nbsp;</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">比如现在html5页面有一个按钮btn，点击按钮btn后，需要把数据传递给native端；代码如下：</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre>&lt;div id=” bookidA”&gt; bookidA &lt;/div&gt;
+Var bookidA =<span style="color: #000000;"> document.getElementById(“bookidA”);
+bookidA.addEventListener(‘click’,</span><span style="color: #0000ff;">function</span><span style="color: #000000;">(e){
+    e.preventDefault();
+    submit();
+});
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> submit(){
+</span><span style="color: #0000ff;">    var</span> result =<span style="color: #000000;"> {“json”:””};
+    JavaScriptInterface.submitResult(result);
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p style="background: #999; color: #fff; font-size: 24px; height: 40px; line-height: 40px; padding-left: 12px; font-weight: bold;">三： JS与iOS Native Code互调方法</p>
+<p>&nbsp; &nbsp; <span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">为大家介绍一个优秀的国人开发开源小项目：<strong>WebViewJavascriptBridge</strong>。它优雅地实现了在使用UIWebView时JS与ios 的Objective-C nativecode之间的互调，支持消息发送、接收、消息处理器的注册与调用以及设置消息处理的回调。它是连接UIWebView和Javascript的bridge。</span></p>
+<p><span style="font-family: &#39;Microsoft YaHei&#39;; font-size: 16px;">&nbsp;&nbsp; 如下JS代码实现connectWebViewJavascriptBridge</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #008000;">   //</span><span style="color: #008000;"> 连接html</span>
+   <span style="color: #0000ff;">function</span><span style="color: #000000;"> connectWebViewJavascriptBridge(callback) {
+       </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (window.WebViewJavascriptBridge) {
+           callback(WebViewJavascriptBridge)
+       } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+           document.addEventListener(</span>'WebViewJavascriptBridgeReady', <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+                callback(WebViewJavascriptBridge)
+           }, </span><span style="color: #0000ff;">false</span><span style="color: #000000;">)
+       }
+   }   
+   connectWebViewJavascriptBridge (</span><span style="color: #0000ff;">function</span><span style="color: #000000;">(bridge) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> init方法是把数据传给开发 data是前端需要传递的数据</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;"> 再调用responseCallback(data)</span>
+        bridge.init(<span style="color: #0000ff;">function</span><span style="color: #000000;">(message, responseCallback) {
+             </span><span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> {“json”:””};
+             responseCallback(data);
+        });
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> registerHandler 这个方法是从ios拿到数据 给前端。其中testJavascriptHandler要与开发那边名字对应上</span>
+        bridge.registerHandler('testJavascriptHandler', <span style="color: #0000ff;">function</span><span style="color: #000000;">(data, responseCallback) {
+            </span><span style="color: #0000ff;">var</span> data = eval("("+data+")"<span style="color: #000000;">);
+       })
+   });  </span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./webview与JS的交互_files/copycode.gif" alt="复制代码"></a></span></div></div></div><div id="MySignature"></div>
+        <div class="clear"></div>
+        <div id="blog_post_info_block">
+        <div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(4550228,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow();" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./webview与JS的交互_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./webview与JS的交互_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/tugenhua0707/" target="_blank"><img src="./webview与JS的交互_files/20160306101106.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/tugenhua0707/">空智</a><br>
+            <a href="http://home.cnblogs.com/u/tugenhua0707/followees">关注 - 20</a><br>
+            <a href="http://home.cnblogs.com/u/tugenhua0707/followers">粉丝 - 614</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow();return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(4550228,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">3</span>
+    </div>
+    <div class="buryit" onclick="votePost(4550228,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+            (请您对文章做出评价)
+    </div>
+</div>
+</div>
+        <div class="clear"></div>
+        <div id="post_next_prev"><a href="http://www.cnblogs.com/tugenhua0707/p/4540766.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/tugenhua0707/p/4540766.html" title="发布于2015-05-30 18:07">javascript客户端检测技术</a><br><a href="http://www.cnblogs.com/tugenhua0707/p/4557159.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/tugenhua0707/p/4557159.html" title="发布于2015-06-06 19:34">理解Javascript的动态语言特性</a><br></div>
+    </div>
+</div>
+    <ul class="postmetadata">
+        <li class="icon_cat" id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/tugenhua0707/category/562154.html">HTML5</a></li>
+        <li class="icon_bullet" id="EntryTag">标签: <a href="http://www.cnblogs.com/tugenhua0707/tag/webview%E4%B8%8EJS%E7%9A%84%E4%BA%A4%E4%BA%92/">webview与JS的交互</a></li>
+    </ul>
+</div>
+<script type="text/javascript">var allowComments=true,isLogined=true,cb_blogId=161525,cb_entryId=4550228,cb_blogApp=currentBlogApp,cb_blogUserGuid='0bb325ba-be0e-e311-8d02-90b11c0b17d6',cb_entryCreatedDate='2015/6/3 20:54:00';loadViewCount(cb_entryId);</script>
+<script type="text/javascript">
+    var m = window.__blog.postRendered;
+    if (m) { m(__$("post")); }
+</script>
+<script type="text/javascript">
+    var m = window.__blog.postRenderPosts;
+    if (m) { m(); }
+</script>
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<a class="addcomment" href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#comment_tip">Add your comment</a>
+<h3 id="comments"></h3>
+<div class="feedbackNoItems"></div>
+
+
+<ol class="commentlist" id="commentList">	
+
+		<li class="alt">
+			<h5>
+				<cite><a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#3199885" class="layer">#1楼</a><a name="3199885" id="comment_anchor_3199885"></a></cite> <a id="a_comment_author_3199885" href="http://www.cnblogs.com/codezyc/" target="_blank">codezyc</a> <a href="http://msg.cnblogs.com/send/codezyc" title="发送站内短消息" class="sendMsg2This">&nbsp;</a><small> <span class="comment_date">2015-06-04 09:24</span></small>
+			</h5>
+			<div id="comment_body_3199885" class="blog_comment_body">好文，谢谢楼主的分享</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3199885,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3199885,&#39;Bury&#39;,this)">反对(0)</a></div>
+			<div class="opt_comment"><span class="comment_actions"><a href="javascript:void(0);" onclick="return ReplyComment(3199885,&#39;316D+z8Alb0VvSm9ZfEqBHX/nCxwXx4OHAgeXoHNGCbOa9PoYho+AA==&#39;)">回复</a><a href="javascript:void(0);" onclick="return QuoteComment(3199885,&#39;316D+z8Alb0VvSm9ZfEqBHX/nCxwXx4OHAgeXoHNGCbOa9PoYho+AA==&#39;)">引用</a></span></div>
+		</li>
+	
+		<li class="alt">
+			<h5>
+				<cite><a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#3214719" class="layer">#2楼</a><a name="3214719" id="comment_anchor_3214719"></a></cite> <a id="a_comment_author_3214719" href="http://www.cnblogs.com/liyunhua/" target="_blank">静逸</a> <a href="http://msg.cnblogs.com/send/%E9%9D%99%E9%80%B8" title="发送站内短消息" class="sendMsg2This">&nbsp;</a><small> <span class="comment_date">2015-06-25 08:40</span></small>
+			</h5>
+			<div id="comment_body_3214719" class="blog_comment_body">楼主的每篇文章都很精湛。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3214719,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3214719,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3214719_avatar" style="display:none;">http://pic.cnblogs.com/face/755265/20150509140625.png</span>
+			<div class="opt_comment"><span class="comment_actions"><a href="javascript:void(0);" onclick="return ReplyComment(3214719,&#39;SZfBE/TltsYP0YM22e520o2IwVwJ1bKo5zBS4840dWmJk6yQUtbxfg==&#39;)">回复</a><a href="javascript:void(0);" onclick="return QuoteComment(3214719,&#39;SZfBE/TltsYP0YM22e520o2IwVwJ1bKo5zBS4840dWmJk6yQUtbxfg==&#39;)">引用</a></span></div>
+		</li>
+	
+		<li class="alt">
+			<h5>
+				<cite><a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#3241569" class="layer">#3楼</a><a name="3241569" id="comment_anchor_3241569"></a><span id="comment-maxId" style="display:none;">3241569</span><span id="comment-maxDate" style="display:none;">2015/8/5 11:40:04</span></cite> <a id="a_comment_author_3241569" href="http://www.cnblogs.com/yyjazsf/" target="_blank">雨夹_雪</a> <a href="http://msg.cnblogs.com/send/%E9%9B%A8%E5%A4%B9_%E9%9B%AA" title="发送站内短消息" class="sendMsg2This">&nbsp;</a><small> <span class="comment_date">2015-08-05 11:40</span></small>
+			</h5>
+			<div id="comment_body_3241569" class="blog_comment_body">如果我有个app，多个html，<br>js文件同时和 android 和 ios交互，<br>ios端使用WebViewJavascriptBridge<br><br>但是下面这种写法 IOS端响应特别慢，我把代码写到每一个js后（不通用）速度就没问题了<br>源码 <a href="http://runjs.cn/code/8peumqsw" target="_blank">http://runjs.cn/code/8peumqsw</a><br><br>请问楼主有何高招</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3241569,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3241569,&#39;Bury&#39;,this)">反对(0)</a></div>
+			<div class="opt_comment"><span class="comment_actions"><a href="javascript:void(0);" onclick="return ReplyComment(3241569,&#39;IpAEvIx0reEfyLs8KZdetyVoesu5XAbbTkG5VjaxS/oDPtRVz8W9Gg==&#39;)">回复</a><a href="javascript:void(0);" onclick="return QuoteComment(3241569,&#39;IpAEvIx0reEfyLs8KZdetyVoesu5XAbbTkG5VjaxS/oDPtRVz8W9Gg==&#39;)">引用</a></span></div>
+		</li>
+	
+</ol>
+
+<div id="comments_pager_bottom"></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#top">返回顶部</a></div>
+<div id="comment_form_container">
+<div id="commentform_title">发表评论</div>
+<span id="tip_comment" style="color:Red"></span>
+<p>
+昵称：<input type="text" id="tbCommentAuthor" class="author" disabled="disabled" size="50" value="Jamy Cai">
+</p>
+<div class="commentbox_main">
+<div class="commentbox_title">
+<div class="commentbox_title_left">评论内容：</div>
+<div class="commentbox_title_right">
+<img id="ubb_quote" class="comment_icon" src="./webview与JS的交互_files/quote.gif" alt="引用" title="添加引用" onclick="insertUBB(&#39;tbCommentBody&#39;,&#39;quote&#39;)">
+<img id="ubb_bold" class="comment_icon" src="./webview与JS的交互_files/b.png" alt="粗体" title="添加粗体" onclick="insertUBB(&#39;tbCommentBody&#39;,&#39;b&#39;)">
+<img id="ubb_url" class="comment_icon" src="./webview与JS的交互_files/lk.png" alt="链接" title="添加链接" onclick="insertUbbUrl(&#39;tbCommentBody&#39;)">
+<img id="ubb_indent" class="comment_icon" src="./webview与JS的交互_files/indent.png" alt="缩进" title="添加首行缩进" onclick="insertIndent(&#39;tbCommentBody&#39;)">
+<img id="ubb_code" class="comment_icon" src="./webview与JS的交互_files/InsertCode.gif" alt="代码" title="添加代码" onclick="insertUbbCode()">
+<img id="ubb_img" class="comment_icon" src="./webview与JS的交互_files/img.gif" alt="图片" title="上传图片" onclick="OpenImageUploadWindow();">
+</div>
+</div>
+<div class="clear"></div>
+<textarea id="tbCommentBody" class="comment_textarea"></textarea>
+</div>
+<p id="commentbox_opt">
+<input id="btn_comment_submit" type="button" class="comment_btn" value="提交评论">
+<span id="span_comment_canceledit" style="display:none"><a href="javascript:void(0);" onclick="return CancelCommentEdit()">不改了</a></span>
+<a href="javascript:void(0);" onclick="return logout();">退出登录</a>
+        <a id="commentbox_opt_sub" href="javascript:void(0);" title="订阅后有新评论时会邮件通知您" onclick="commentManager.Subscribe()">订阅评论</a>
+</p>
+<div id="tip_comment2" style="color:Red"></div>
+<p>
+[Ctrl+Enter快捷键提交]
+</p>
+<div style="display:none">
+<span id="comment_edit_id"></span><span id="span_parentcomment_id"></span>
+<span id="span_parent_id"></span>
+<span id="span_comment_replyto"></span>
+<span id="span_comment_posted"></span>
+</div>
+</div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://www.rongcloud.cn/" target="_blank">【推荐】融云即时通讯云－豆果美食、Faceu等亿级APP都在用</a><br><a href="http://www.gcpowertools.com.cn/products/activereports_overview.htm?utm_source=cnblogs&utm_medium=blogpage&utm_term=bottom&utm_content=AR&utm_campaign=community" target="_blank">【推荐】报表开发有捷径：快速设计轻松集成，数据可视化和交互</a><br><a href="http://cn.iforex.com/landing_pages/br1/zhns/Testimonials8/?content=Testimonials8&SID=445058" target="_blank">【推荐】一个月仅用630元赚取15000元，学会投资</a><br><a href="http://event.open.alipay.com/?adtag=bokeyuan2016" target="_blank">【活动】蚂蚁金服开放平台合作伙伴大会(北京8.10)</a><br></div>
+<div id="opt_under_post"></div>
+<div id="ad_c1" class="c_ad_block"><a href="http://www.rongcloud.cn/" target="_blank"><img width="300" height="250" src="./webview与JS的交互_files/24442-20151020212817208-240968553.png" alt=""></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/550591/" target="_blank">原黑莓旗下QNX汽车软件业务部门CEO Dodge年初便加入苹果</a><br> ·  <a href="http://news.cnblogs.com/n/550590/" target="_blank">干嘉伟遭边缘化：美团点评真有下半场吗</a><br> ·  <a href="http://news.cnblogs.com/n/550589/" target="_blank">司机如何看待滴滴Uber合并传闻：如果没奖励就不干了</a><br> ·  <a href="http://news.cnblogs.com/n/550588/" target="_blank">揭秘滴滴优步谈判：Uber创始人遭施压 合并于上周四达成</a><br> ·  <a href="http://news.cnblogs.com/n/550587/" target="_blank">专利显示苹果正为未来iPhone储备双卡技术</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="ad_c2" class="c_ad_block"><a href="https://www.jiguang.cn/?from=cnblogs01" target="_blank"><img width="468" height="60" src="./webview与JS的交互_files/24442-20160613130538213-1713265809.jpg" alt=""></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/540529/" target="_blank">可是姑娘，你为什么要编程呢？</a><br> ·  <a href="http://kb.cnblogs.com/page/549631/" target="_blank">知其所以然（以算法学习为例）</a><br> ·  <a href="http://kb.cnblogs.com/page/548394/" target="_blank">如何给变量取个简短且无歧义的名字</a><br> ·  <a href="http://kb.cnblogs.com/page/549080/" target="_blank">编程的智慧</a><br> ·  <a href="http://kb.cnblogs.com/page/549049/" target="_blank">写给初学前端工程师的一封信</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+$(function () {
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);    
+});
+</script>
+</div>
+
+
+        </div>
+
+        <script type="text/javascript">
+            var m = window.__blog.contentRendered;
+            if (m) { m(__$("content")); }
+        </script>
+
+        <div id="sidebar">
+            
+<div id="about">
+<div>
+<h2 id="about_title">About</h2>
+<div id="about_body">
+<div id="blog-news"><div class="add-default">
+  <div style="float: left; margin-right: 5px; width: 190px;">
+  <!--<img width="220" height="252" src="http://upload.cnblogs.com/will-crop-avatar/561794/561794-20151025005354052-661052536.png?id=1445705746382967" alt="" />-->
+<img width="190" height="270" src="./webview与JS的交互_files/561794-20160101202220667-1145590784.jpg">
+</div>
+<div>
+<label>姓名</label>：涂根华<br>
+<label>所在地</label>：浙江- 杭州<br>
+<label>所在职位</label>：前端攻城师<br>
+<label>常用邮箱</label>：879083421@qq.com<br>
+<label>婚姻</label>：single~~<br>
+<label>兴趣爱好</label>：web前端、旅游等.<br>
+<label>人生格言</label>：1. 路漫漫其修远兮,吾将上下而求索<br>2. 居安思危 思则有备,<br>3. 求知若饥 虚心若愚,想做成任何事情，只要方向正确，只要能坚持，能像愚公愚山那样的精神就好~每天一点点学，一点点积累，只要能坚持下来定会把事情做好~<br>
+<label>最近的目标：</label>深入研究HTML+CSS+JS基本原理及相应的demo，及研究nodeJS<br>
+<label>前端技术介绍：</label>
+目前已工作5年的前端开发，对前端开发有自己的见解，认真踏实的工作，对前端逐渐深入的研究其基本原理。<br>
+</div>
+</div><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/tugenhua0707/">空智</a><br>园龄：<a href="http://home.cnblogs.com/u/tugenhua0707/" title="入园时间：2013-08-27">2年11个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/tugenhua0707/followers/">614</a><br>关注：<a href="http://home.cnblogs.com/u/tugenhua0707/followees/">20</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;0bb325ba-be0e-e311-8d02-90b11c0b17d6&#39;)">+加关注</a></div></div></div>
+<script type="text/javascript">loadBlogNews();</script>
+</div>
+</div>
+</div>
+
+            <script type="text/javascript">
+                var m = window.__blog.aboutRendered;
+                if (m) { m(__$("about")); }
+            </script>
+            
+<div id="mySearchWrapper">
+    <div id="mySearch">
+        <input type="image" src="./webview与JS的交互_files/btnsearch.gif" id="btnZzk" class="submit" onclick="zzk_go();return false;">
+        <label class="lb_search"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="keyword"></label>
+    </div>
+</div>
+
+            <script type="text/javascript">
+                var m = window.__blog.searchFormRendered;
+                if (m) { m(__$("searchform")); }
+            </script>
+            <div id="sideMain">
+            <div id="side-recent-posts">
+        <h2>最新随笔</h2>
+        <ul class="bullet">
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5576262.html">webpack进阶构建项目(一)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5568734.html">移动端开发适配总结</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5562548.html">gulp进阶构建项目由浅入深</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5538761.html">css3 实现逐帧动画</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5507250.html">jQuery1.9.1源码分析--数据缓存Data模块</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5444722.html">nodejs开发指南读后感</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5385261.html">css3动画由浅入深总结</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5272539.html">浅谈javascript函数节流</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5260411.html">理解CSS3中的background－size(对响应性图片等比例缩放)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5256367.html">Gulp实现web服务器</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5204568.html">移动端事件介绍</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5198407.html">Javascript设计模式详解</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5180841.html">H5移动端知识点总结</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5156179.html">【干货理解】理解javascript中实现MVC的原理</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5135533.html">[干货]数据交互与本地存储</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5068449.html">深入理解Javascript面向对象编程</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5052808.html">javascript数组的知识点讲解</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5046854.html">javascript函数式编程要掌握的知识点讲解</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/5037811.html">深入浅出的javascript的正则表达式学习教程</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/p/4982646.html">Gulp解决发布线上文件(CSS和JS)缓存问题</a></li>
+        </ul>
+    </div><div id="side-recent-comments">
+        <h2>最新评论</h2>
+        <ul class="voice">
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/3346522.html#3479519">Re:iframe之间通信问题及iframe自适应高度问题</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/3346522.html#3479519">
+                        好方法 ，跟我想的基本一样
+                        -- 世界万物
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5385261.html#3476982">Re:css3动画由浅入深总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5385261.html#3476982">
+                        首先对博主总结的css3效果点赞，其次，博主要是借助gitHub上显示页面，以及页面源码那就更好了。
+                        -- 雨为我停
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3471921">Re:Git使用教程</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3471921">
+                        非常赞,非常感谢!
+                        -- kid1412
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3470602">Re:Git使用教程</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3470602">
+                        非常详细的入门教程
+                        -- Alen在西安
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3463971">Re:Git使用教程</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3463971">
+                        非常感谢。详细简要，有用！
+                        -- 枕上轻寒
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3460343">Re:Git使用教程</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3460343">
+                        git操作写的太好了，谢谢楼主
+                        -- 暖阳阳
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/3286706.html#3458391">Re:Jquery分页组件</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/3286706.html#3458391">
+                        代码格式化都坏了，看的太幸苦了。
+                        -- 月雨灵枫
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5180841.html#3455866">Re:H5移动端知识点总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5180841.html#3455866">
+                        h5大全
+                        -- 蓝诗
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4883999.html#3454891">Re:CSS2-3常见的demo列子总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4883999.html#3454891">
+                        方法4. css图片未知高度在标准浏览器下垂直居中.  此方法在ie6、7下不是那么垂直居中，跟字体有关系吗？ 但是我字体默认为12px  本来想截个图把我测试的结果展示一下，无奈上传不了。
+                        -- 静逸
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/3454942.html#3454691">Re:css实现固定高度及未知高度文字垂直居中的完美解决方案</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/3454942.html#3454691">
+                        太棒了
+                        -- 静逸
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3453826">Re:Git使用教程</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4050072.html#3453826">
+                        昨晚看了一遍，讲得很清楚，有收获。感谢 ：）
+                        -- glxu
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5576262.html#3452656">Re:webpack进阶构建项目(一)</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5576262.html#3452656">
+                        很全，对新手很有指导意义，谢谢园主。
+                        -- 一直在寻
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5576262.html#3450407">Re:webpack进阶构建项目(一)</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5576262.html#3450407">
+                        mark
+                        -- cdmin207078
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5576262.html#3450331">Re:webpack进阶构建项目(一)</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5576262.html#3450331">
+                        mark
+                        -- 早起的菜鸟
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4023186.html#3449789">Re:Ajax基本知识</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4023186.html#3449789">
+                        关于readyState，博主描述的可能存在一些小问题，readyState为2的时候，readyState上面的值就是HEADERS_RECEIVED，这不仅仅是代表着已经发送了，而是已经发送[b]......
+                        -- EchoSoar
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/4067220.html#3449282">Re:requireJS(版本是2.1.15)学习教程(一)</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/4067220.html#3449282">
+                        楼主内容写的很好，例子也全面，就是第五点config里面的app.js配置有手误require(['app/d'],function(dss){ console.log(d);});f......
+                        -- Edda
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3449086">Re:移动端开发适配总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3449086">
+                        @孟回头
+恩恩 是的  你讲的很有道理 你可以试试淘宝首页 你在电脑上一直按ctrl+ + 把页面放大吧 有一部分页面 也会看不到哦 ~  这样是不是淘宝首页是不是也是bug哦~  呵呵~
+                        -- 空智
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3449084">Re:移动端开发适配总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3449084">
+                        安卓老人手机把系统字体设置最大。
+rem不见各种bug!
+                        -- 孟回头
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3449011">Re:移动端开发适配总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3449011">
+                        哦，原来如此，我就说，搞这么大，那定不得大到只能显示几个字符了
+                        -- 寻风问雨
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3448820">Re:移动端开发适配总结</a>
+                    <br>
+                    <a class="child" href="http://www.cnblogs.com/tugenhua0707/p/5568734.html#3448820">
+                        @寻风问雨
+移动设备默认是16px的  我们把它设置成默认100px是针对320px移动设备来讲的
+                        -- 空智
+                    </a>
+                </li>
+        </ul>
+    </div></div>
+            <div id="sideRight">
+            <div id="side-archives">
+        <h2>随笔档案</h2>
+        <ul class="date">
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2016/06.html">2016年6月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2016/05.html">2016年5月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2016/04.html">2016年4月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2016/03.html">2016年3月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2016/02.html">2016年2月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2016/01.html">2016年1月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/12.html">2015年12月(4)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/11.html">2015年11月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/10.html">2015年10月(1)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/09.html">2015年9月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/08.html">2015年8月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/07.html">2015年7月(9)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/06.html">2015年6月(6)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/05.html">2015年5月(11)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/04.html">2015年4月(9)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/03.html">2015年3月(8)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/02.html">2015年2月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2015/01.html">2015年1月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/12.html">2014年12月(4)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/11.html">2014年11月(6)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/10.html">2014年10月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/09.html">2014年9月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/08.html">2014年8月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/07.html">2014年7月(6)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/06.html">2014年6月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/05.html">2014年5月(3)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/04.html">2014年4月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/03.html">2014年3月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/02.html">2014年2月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2014/01.html">2014年1月(13)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2013/12.html">2013年12月(14)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2013/11.html">2013年11月(7)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2013/10.html">2013年10月(5)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2013/09.html">2013年9月(2)</a></li>
+                <li><a href="http://www.cnblogs.com/tugenhua0707/archive/2013/08.html">2013年8月(10)</a></li>
+        </ul>
+    </div></div>
+            <div id="sideLeft">
+            <div id="side-categories">
+        <h2>随笔分类</h2>
+        <ul class="folder">
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/536191.html">CSS(9)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/626225.html">CSS3(9)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/626226.html">Ecmascript 6(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/536190.html">HTML(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/562154.html">HTML5(17)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/536189.html">javascript(79)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/713634.html">javascript设计模式的理解(4)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/664046.html">javascript数据结构与算法(9)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/765929.html">javascript正则表达式(1)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/626222.html">nodeJS(6)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/725509.html">ReactJS(3)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/626221.html">requireJS(2)</a>
+                </li>
+                <li>
+                    
+                    <a href="http://www.cnblogs.com/tugenhua0707/category/544573.html">前端项目工具(22)</a>
+                </li>
+        </ul>
+    </div><div id="side-top-posts-custom">
+    <h2>推荐排行榜</h2>
+    <div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html">1. Git使用教程(114)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3969558.html">2. SVN使用教程总结(50)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4623317.html">3. Fiddler调式使用知多少(一)深入研究(48)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4501843.html">4. Javascript事件总结(27)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3485384.html">5. CSS2.0实现面包屑(15)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4637771.html">6. Fiddler实战深入研究(二)(13)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4306760.html">7. css3动画功能介绍(12)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3489863.html">8. JS 仿腾讯发表微博的效果(11)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4147569.html">9. 响应性web设计实战总结(11)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/5385261.html">10. css3动画由浅入深总结(11)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4540766.html">11. javascript客户端检测技术(10)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3442541.html">12. JS五星级评分效果(类似与淘宝打分效果)(10)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4361051.html">13. javascript数据结构与算法-- 二叉树(9)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3501175.html">14. JS仿QQ空间鼠标停在长图片时候图片自动上下滚动效果(8)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/5037811.html">15. 深入浅出的javascript的正则表达式学习教程(8)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4756339.html">16. ReactJS入门学习二(8)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4743950.html">17. ReactJS入门学习一(7)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4722696.html">18. 理解javascript中的策略模式(7)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/5046854.html">19. javascript函数式编程要掌握的知识点讲解(7)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/5260411.html">20. 理解CSS3中的background－size(对响应性图片等比例缩放)(7)</a></li></ul></div>
+</div><div id="side-top-posts">
+    <h2>阅读排行榜</h2>
+    <div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/tugenhua0707/p/4050072.html">1. Git使用教程(18325)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4623317.html">2. Fiddler调式使用知多少(一)深入研究(7665)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4793265.html">3. 30分钟手把手教你学webpack实战(5412)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3969558.html">4. SVN使用教程总结(5256)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3515292.html">5. JS图片延迟加载分析及简单的demo(4388)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4501843.html">6. Javascript事件总结(4336)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4540766.html">7. javascript客户端检测技术(3850)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3407741.html">8. JS时间轴效果(类似于qq空间时间轴效果)(3627)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4637771.html">9. Fiddler实战深入研究(二)(3174)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4605593.html">10. javascript和HTML5上传图片之前实现预览效果(3063)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3346522.html">11. iframe之间通信问题及iframe自适应高度问题(3022)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3484685.html">12. CSS自适应布局(左右固定 中间自适应或者右侧固定 左侧自适应)(2918)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3470234.html">13. JS编写简单的弹窗插件(含有demo和源码)(2905)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3442541.html">14. JS五星级评分效果(类似与淘宝打分效果)(2851)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4147569.html">15. 响应性web设计实战总结(2744)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3507957.html">16. AMD规范与CMD规范的区别(2654)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/4067220.html">17. requireJS(版本是2.1.15)学习教程(一)(2579)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3489863.html">18. JS 仿腾讯发表微博的效果(2471)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3424529.html">19. JS模拟下拉框select(2465)</a></li><li><a href="http://www.cnblogs.com/tugenhua0707/p/3520955.html">20. JS仿淘宝详情页菜单条智能定位效果(2417)</a></li></ul></div>
+</div>    
+    
+    
+    
+
+
+        
+<div id="side-link-561112">
+            <h2>HTML5 History</h2>
+            <ul class="chain">
+            </ul>
+        </div></div>
+            
+                <div id="sideContainer"></div>
+                <script type="text/javascript">
+                    $.ajax({
+                        url: '/' + currentBlogApp + '/mvc/blog/Minyx2_Lite_SideColumn.aspx',
+                        data: '{}',
+                        type: 'post',
+                        dataType: 'text',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            if (data) {
+                                $("#sideContainer").html(data);
+                                loadBlogDefaultCalendar();
+                                loadBlogSideBlocks();
+                                var m = window.__blog.sideContainerRendered;
+                                if (m) { m(__$("sideContainer")); }
+                                window.__blog.sidebar.__layout();
+                            }
+                        }
+                    });
+
+                </script>
+            
+        </div>
+
+        <script type="text/javascript">
+            var m = window.__blog.sidebarRendered;
+            if (m) { m(__$("sidebar")); }
+        </script>
+
+        <div id="footer">
+            
+<p id="logoFoot">
+    <a href="http://www.spiga.com.mx/" title="Agencia Interactiva Spiga">www.spiga.com.mx</a>
+</p>
+<div class="footText">
+<p>
+Copyright ©2016 空智
+</p>
+<p>
+<a href="http://www.cnblogs.com/">博客园</a>
+</p>
+</div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var m = window.__blog.wrapperRendered;
+        if (m) { m(__$("wrapper")); }
+    </script>
+
+</div>
+<script type="text/javascript">
+    var m = window.__blog.containerRendered;
+    if (m) { m(__$("container")); }
+</script>
+
+
+<div id="__nightingale_view_cover" style="width: 100%; height: 100%; -webkit-transition: -webkit-transform 10s ease-in-out; transition: -webkit-transform 10s ease-in-out; position: fixed !important; left: 0px !important; bottom: 0px !important; overflow: hidden !important; pointer-events: none !important; z-index: 2147483647; opacity: 0; background: rgb(0, 0, 0) !important;"></div><div class="sogoutip" style="z-index: 2147483645; visibility: hidden; display: none;"></div><div class="sogoubottom" id="sougou_bottom" style="display: none;"></div><div id="ext_stophi" style="z-index: 2147483647;"><div class="extnoticebg"></div><div class="extnotice"><h2>关闭提示 <a href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#" title="关闭提示" id="closenotice" class="closenotice">关闭</a></h2><p id="sogouconfirmtxt"></p>  <a id="sogouconfirm" href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#" class="extconfirm">确 认</a> <a id="sogoucancel" href="http://www.cnblogs.com/tugenhua0707/p/4550228.html#" class="extconfirm">取 消</a></div></div><div id="ext_overlay" class="ext_overlayBG" style="display: none; z-index: 2147483646;"></div><iframe class="sogou_sugg_feedbackquan" frameborder="0" scrolling="no" src="./webview与JS的交互_files/yun4.html" style="border: none; display: none; z-index: 2147483645; background: transparent;"></iframe><div class="rec-mini" id="id_div_close" style="display: none; z-index: 2147483645; width: 53px; height: 53px; position: fixed; right: 7px; bottom: 7px; cursor: pointer; background: url(http://ht.www.sogou.com/images/mini.png) no-repeat;"></div><script src="./webview与JS的交互_files/pv.gif"></script></body></html>
