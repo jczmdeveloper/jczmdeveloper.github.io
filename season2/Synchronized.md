@@ -1,4 +1,4 @@
-#synchronized
+#Synchronized 详解
 ---
 
 在并发编程中，多线程同时并发访问的资源叫做临界资源，当多个线程同时访问对象并要求操作相同资源时，分割了原子操作就有可能出现数据的不一致或数据不完整的情况，为避免这种情况的发生，我们会采取同步机制，以确保在某一时刻，方法内只允许有一个线程。
@@ -68,7 +68,7 @@ public class  SynchronizedInteger
 ##Java 多线程：synchronized 关键字用法（修饰类，方法，静态方法，代码块）	
 介绍了Java的内存模型，从而可能导致的多线程问题。synchronized就是避免这个问题的解决方法之一。除了 synchronized 的方式，还有 lock，condition，volatile，threadlocal，atomicInteger，cas等方式。
 	 
-synchronized 用法
+#Synchronized 用法
 
 它的修饰对象有几种：
 1. 修饰一个类，其作用的范围是synchronized后面括号括起来的部分，作用的对象是这个类的所有对象。
@@ -76,7 +76,7 @@ synchronized 用法
 3. 修改一个静态的方法，其作用的范围是整个静态方法，作用的对象是这个类的所有对象； 
 4. 修饰一个代码块，被修饰的代码块称为同步语句块，其作用的范围是大括号{}括起来的代码，作用的对象是调用这个代码块的对象；
 
-修饰一个类
+#修饰一个类
 
 其作用的范围是synchronized后面括号括起来的部分，作用的对象是这个类的所有对象，如下代码：
 
@@ -87,7 +87,7 @@ class ClassName {
       }
    }
 }
-修饰一个方法
+#修饰一个方法
 
 Synchronized修饰一个方法很简单，就是在方法的前面加synchronized，例如：
 
@@ -100,14 +100,14 @@ public synchronized void method()
 2. 构造方法不能使用synchronized关键字，但可以使用synchronized代码块来进行同步。 
 3. synchronized 关键字不能被继承。如果子类覆盖了父类的 被 synchronized 关键字修饰的方法，那么子类的该方法只要没有 synchronized 关键字，那么就默认没有同步，也就是说，不能继承父类的 synchronized。
 
-修饰静态方法
+#修饰静态方法
 
 我们知道静态方法是属于类的而不属于对象的。同样的，synchronized修饰的静态方法锁定的是这个类的所有对象。如下：
 
 public synchronized static void method() {
    // todo
 }
-修饰代码块
+#修饰代码块
 
 当两个并发线程访问同一个对象object中的这个synchronized(this)同步代码块时，一个时间内只能有一个线程得到执行。另一个线程必须等待当前线程执行完这个代码块以后才能执行该代码块。
 当一个线程访问object的一个synchronized(this)同步代码块时，另一个线程仍然可以访问该object中的非synchronized(this)同步代码块。
